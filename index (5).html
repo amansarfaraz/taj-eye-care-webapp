@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taj Eye Care and Opticals — Clinic Desk</title>
+<style>
+/* ==========================================================================
+   FixMyGlasses Clinic — shared styles
+   Design tokens
+   -------------------------------------------------------------------------
+   Color
+     --ink:        #1D2A2B   primary text
+     --teal-900:   #123638   deep clinical teal (headers, nav)
+     --teal-700:   #1B4B4F   primary brand
+     --teal-100:   #E3EFEE   pale teal surfaces
+     --mint-bg:    #F4F8F7   page background
+     --amber:      #E0A458   accent / CTA
+     --amber-700:  #B97F35   accent hover
+     --good:       #3E8E5A   success / paid
+     --bad:        #C0463D   warning / balance due
+     --line:       #CBD9D8   hairline borders
+   Type
+     display: 'Fraunces'      (headings — has an optical, lens-ground curve)
+     body:    'Inter'         (forms, body copy)
+     mono:    'IBM Plex Mono' (SPH/CYL/AXIS readouts — phoropter-style figures)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root{
+  --ink:#1D2A2B;
+  --teal-900:#123638;
+  --teal-700:#1B4B4F;
+  --teal-100:#E3EFEE;
+  --mint-bg:#F4F8F7;
+  --amber:#E0A458;
+  --amber-700:#B97F35;
+  --good:#3E8E5A;
+  --good-bg:#E7F3EB;
+  --bad:#C0463D;
+  --bad-bg:#FBEAE8;
+  --line:#CBD9D8;
+  --white:#FFFFFF;
+  --radius:10px;
+  --shadow:0 2px 10px rgba(18,54,56,0.08);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--ink);
+  background:var(--mint-bg);
+  line-height:1.5;
+}
+h1,h2,h3,.display{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  letter-spacing:-0.01em;
+  color:var(--teal-900);
+  margin:0 0 4px;
+}
+a{color:var(--teal-700);}
+.mono, input.mono, .power-grid input{
+  font-family:'IBM Plex Mono',monospace;
+}
+
+/* ---------- Top nav ---------- */
+.topbar{
+  background:var(--teal-900);
+  color:var(--white);
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky; top:0; z-index:20;
+  box-shadow:var(--shadow);
+}
+.topbar .brand{
+  display:flex; align-items:center; gap:10px;
+  font-family:'Fraunces',serif; font-weight:600; font-size:1.15rem; color:var(--white);
+  text-decoration:none;
+}
+.brand .lens{
+  width:26px;height:26px;border-radius:50%;
+  border:3px solid var(--amber);
+  position:relative; flex:none;
+}
+.brand .lens::after{
+  content:"";
+  position:absolute; inset:5px;
+  border-radius:50%;
+  border:1.5px solid rgba(224,164,88,0.6);
+}
+.topbar nav{display:flex; gap:6px;}
+.topbar nav a{
+  color:var(--teal-100);
+  text-decoration:none;
+  font-size:0.92rem;
+  font-weight:600;
+  padding:8px 14px;
+  border-radius:8px;
+}
+.topbar nav a.active, .topbar nav a:hover{
+  background:rgba(255,255,255,0.1);
+  color:var(--white);
+}
+
+/* ---------- Layout ---------- */
+.page{max-width:1180px;margin:0 auto;padding:28px 24px 64px;}
+.lede{color:#3F5A5C;max-width:640px;margin-bottom:22px;}
+.grid-2{display:grid; grid-template-columns:1.05fr 1fr; gap:20px;}
+@media (max-width:900px){ .grid-2{grid-template-columns:1fr;} }
+
+.card{
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px;
+  margin-bottom:18px;
+}
+.card h2{font-size:1.15rem;}
+.card .card-sub{color:#557; font-size:0.85rem; color:#557876; margin-bottom:14px;}
+
+/* ---------- Stepper ---------- */
+.stepper{display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;}
+.step-pill{
+  display:flex; align-items:center; gap:8px;
+  padding:8px 14px 8px 8px;
+  border-radius:999px;
+  background:var(--teal-100);
+  color:var(--teal-900);
+  font-size:0.85rem; font-weight:600;
+  border:1px solid transparent;
+}
+.step-pill .num{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--teal-700); color:var(--white);
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.75rem;
+}
+.step-pill.done{background:var(--good-bg); color:var(--good);}
+.step-pill.done .num{background:var(--good);}
+.step-pill.current{border-color:var(--amber); box-shadow:0 0 0 3px rgba(224,164,88,0.18);}
+
+/* ---------- Form basics ---------- */
+label{
+  display:block; font-size:0.82rem; font-weight:600;
+  color:var(--teal-900); margin-bottom:5px;
+}
+.field{margin-bottom:14px;}
+input[type=text], input[type=tel], input[type=number], input[type=date],
+input[type=time], input[type=file], select, textarea{
+  width:100%; padding:10px 12px;
+  border:1px solid var(--line); border-radius:8px;
+  font-size:0.95rem; color:var(--ink); background:var(--white);
+  font-family:inherit;
+}
+textarea{min-height:70px; resize:vertical;}
+input:focus, select:focus, textarea:focus{
+  outline:2px solid var(--amber); outline-offset:1px; border-color:var(--amber);
+}
+.row{display:grid; gap:12px;}
+.row-2{grid-template-columns:1fr 1fr;}
+.row-3{grid-template-columns:1fr 1fr 1fr;}
+.row-4{grid-template-columns:1fr 1fr 1fr 1fr;}
+@media (max-width:640px){ .row-2,.row-3,.row-4{grid-template-columns:1fr;} }
+
+.radio-group{display:flex; gap:10px;}
+.radio-opt{
+  flex:1; border:1px solid var(--line); border-radius:8px;
+  padding:10px 12px; display:flex; align-items:center; gap:8px;
+  cursor:pointer; font-size:0.9rem; font-weight:600; color:var(--teal-900);
+  background:var(--white);
+}
+.radio-opt input{width:auto; margin:0;}
+.radio-opt.selected{border-color:var(--amber); background:#FFF7EC;}
+
+/* ---------- Power grid (phoropter-style readout) ---------- */
+.power-grid{
+  border:1px solid var(--line); border-radius:8px; overflow:hidden;
+}
+.power-grid table{width:100%; border-collapse:collapse;}
+.power-grid th{
+  background:var(--teal-100); color:var(--teal-900);
+  font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em;
+  padding:8px 6px; font-weight:700;
+}
+.power-grid td{
+  padding:7px 6px; border-top:1px solid var(--line);
+  text-align:center;
+}
+.power-grid td:first-child{
+  text-align:left; padding-left:12px; font-weight:600; color:var(--teal-900); font-size:0.85rem;
+}
+.power-grid input{
+  width:100%; text-align:center; padding:8px 4px; font-size:0.92rem;
+}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:11px 20px; border-radius:8px; border:none;
+  font-weight:700; font-size:0.92rem; cursor:pointer;
+  font-family:'Inter',sans-serif;
+}
+.btn-primary{background:var(--teal-700); color:var(--white);}
+.btn-primary:hover{background:var(--teal-900);}
+.btn-amber{background:var(--amber); color:#3A2708;}
+.btn-amber:hover{background:var(--amber-700); color:var(--white);}
+.btn-ghost{background:transparent; color:var(--teal-700); border:1px solid var(--line);}
+.btn-ghost:hover{background:var(--teal-100);}
+.btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;}
+.btn:disabled{opacity:0.45; cursor:not-allowed;}
+
+/* ---------- Badges / status ---------- */
+.badge{
+  display:inline-block; padding:3px 10px; border-radius:999px;
+  font-size:0.72rem; font-weight:700; letter-spacing:0.02em;
+}
+.badge-wait{background:var(--teal-100); color:var(--teal-900);}
+.badge-good{background:var(--good-bg); color:var(--good);}
+.badge-bad{background:var(--bad-bg); color:var(--bad);}
+
+/* ---------- Queue / picker list (billing page) ---------- */
+.queue-item{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 14px; border:1px solid var(--line); border-radius:8px;
+  margin-bottom:8px; cursor:pointer; background:var(--white);
+}
+.queue-item:hover{border-color:var(--amber);}
+.queue-item.active{border-color:var(--teal-700); background:var(--teal-100);}
+.queue-item .qi-name{font-weight:700; color:var(--teal-900);}
+.queue-item .qi-meta{font-size:0.78rem; color:#557876;}
+.empty-note{color:#7C9291; font-size:0.88rem; padding:10px 2px;}
+
+/* ---------- Amount summary ---------- */
+.amount-box{
+  background:var(--teal-100); border-radius:8px; padding:14px 16px; margin-top:6px;
+}
+.amount-row{display:flex; justify-content:space-between; font-size:0.9rem; padding:4px 0;}
+.amount-row.total{font-weight:700; font-size:1.05rem; color:var(--teal-900); border-top:1px dashed var(--line); margin-top:6px; padding-top:8px;}
+.amount-row.balance{font-weight:700; color:var(--bad);}
+.amount-row.balance.paid{color:var(--good);}
+
+/* ---------- QR box ---------- */
+.qr-box{
+  display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+}
+.qr-img-wrap{
+  width:150px; height:150px; border:1px dashed var(--line); border-radius:8px;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+  background:var(--white); flex:none;
+}
+.qr-img-wrap img{width:100%; height:100%; object-fit:contain;}
+
+/* ==========================================================================
+   PRINT — half A4 (A5, 148mm x 210mm portrait)
+   ========================================================================== */
+.print-sheet{ display:none; }
+
+@media print{
+  @page{ size:148mm 210mm; margin:8mm; }
+  body *{ visibility:hidden; }
+  .print-sheet.print-active, .print-sheet.print-active *{ visibility:visible; }
+  .print-sheet.print-active{
+    display:block !important;
+    position:absolute; top:0; left:0;
+    width:132mm; /* 148mm - 2*8mm margin */
+    font-family:'Inter',sans-serif;
+    color:#000;
+  }
+  .no-print{ display:none !important; }
+}
+
+.print-sheet .rx-head{
+  display:flex; justify-content:space-between; align-items:flex-start;
+  border-bottom:2px solid #123638; padding-bottom:6px; margin-bottom:10px;
+}
+.print-sheet .rx-head .clinic{font-family:'Fraunces',serif; font-weight:700; font-size:1.1rem; color:#123638;}
+.print-sheet .rx-head .doc-type{font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:#557876;}
+.print-sheet .rx-meta{font-size:0.78rem; margin-bottom:10px; line-height:1.6;}
+.print-sheet .rx-meta b{color:#123638;}
+.print-sheet table.rx-table{width:100%; border-collapse:collapse; font-size:0.78rem; margin-bottom:10px;}
+.print-sheet table.rx-table th, .print-sheet table.rx-table td{
+  border:1px solid #99b3b1; padding:5px 6px; text-align:center;
+}
+.print-sheet table.rx-table th{background:#E3EFEE;}
+.print-sheet .rx-note{font-size:0.78rem; margin-bottom:10px;}
+.print-sheet .rx-foot{font-size:0.68rem; color:#557876; border-top:1px solid #99b3b1; padding-top:6px; margin-top:12px;}
+.print-sheet .amt-table{width:100%; border-collapse:collapse; font-size:0.8rem; margin-bottom:8px;}
+.print-sheet .amt-table td{padding:4px 2px;}
+.print-sheet .amt-table tr.total td{font-weight:700; border-top:1px solid #99b3b1; padding-top:6px;}
+.print-sheet .qr-print{width:80px; height:80px; object-fit:contain; border:1px solid #99b3b1;}
+
+/* Small helpers */
+.hidden{display:none !important;}
+.help{font-size:0.78rem; color:#7C9291; margin-top:4px;}
+.footer-note{text-align:center; color:#7C9291; font-size:0.8rem; margin-top:30px;}
+
+/* ==========================================================================
+   Additions: login screen, roles, views, inventory, dashboard
+   ========================================================================== */
+
+/* ---------- View switching (single-document SPA, no iframes) ---------- */
+.view{ display:none; }
+.view.active{ display:block; }
+
+/* ---------- Login screen ---------- */
+#loginScreen{
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(160deg, var(--teal-900), var(--teal-700));
+  padding:20px;
+}
+.login-card{
+  background:var(--white); border-radius:16px; padding:34px 30px;
+  width:100%; max-width:380px; box-shadow:0 20px 50px rgba(0,0,0,0.25);
+}
+.login-card .lbrand{ display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.login-card .lbrand .lens{ width:26px;height:26px;border-radius:50%;border:3px solid var(--amber); }
+.login-card h1{ font-size:1.3rem; margin-bottom:2px; }
+.login-card .lsub{ color:#557876; font-size:0.85rem; margin-bottom:20px; }
+.role-tabs{ display:flex; gap:8px; margin-bottom:18px; }
+.role-tab{
+  flex:1; text-align:center; padding:9px; border-radius:8px; border:1px solid var(--line);
+  cursor:pointer; font-weight:700; font-size:0.85rem; color:var(--teal-900); background:var(--white);
+}
+.role-tab.active{ background:var(--teal-700); color:var(--white); border-color:var(--teal-700); }
+.login-error{ color:var(--bad); font-size:0.82rem; margin-top:8px; display:none; }
+.login-security-note{
+  margin-top:18px; padding:10px 12px; background:var(--teal-100); border-radius:8px;
+  font-size:0.72rem; color:#3F5A5C; line-height:1.5;
+}
+
+/* ---------- Shell topbar with role + logout ---------- */
+.topbar .role-badge{
+  font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:999px;
+  background:rgba(255,255,255,0.14); color:var(--white); margin-left:8px; text-transform:uppercase;
+}
+.topbar .logout-btn{
+  background:transparent; border:1px solid rgba(255,255,255,0.3); color:var(--teal-100);
+  font-size:0.78rem; font-weight:700; padding:6px 12px; border-radius:8px; cursor:pointer; font-family:inherit;
+}
+.topbar .logout-btn:hover{ background:rgba(255,255,255,0.1); color:var(--white); }
+.topbar-inner{ display:flex; align-items:center; gap:14px; }
+
+/* ---------- Inventory ---------- */
+.inv-table th, .records-table th{ position:sticky; top:0; }
+table.inv-table{ width:100%; border-collapse:collapse; font-size:0.86rem; }
+table.inv-table th{ text-align:left; background:var(--teal-100); color:var(--teal-900); padding:9px 10px; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; }
+table.inv-table td{ padding:9px 10px; border-top:1px solid var(--line); }
+.low-stock{ color:var(--bad); font-weight:700; }
+
+/* ---------- Dashboard ---------- */
+.kpi-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:18px; }
+@media (max-width:900px){ .kpi-row{ grid-template-columns:repeat(2,1fr); } }
+.kpi-card{ background:var(--white); border:1px solid var(--line); border-radius:10px; padding:16px 18px; box-shadow:var(--shadow); }
+.kpi-card .kpi-label{ font-size:0.72rem; text-transform:uppercase; letter-spacing:0.05em; color:#557876; font-weight:700; }
+.kpi-card .kpi-value{ font-family:'Fraunces',serif; font-size:1.5rem; color:var(--teal-900); margin-top:4px; }
+.preset-row{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.preset-btn{ padding:7px 14px; border-radius:999px; border:1px solid var(--line); background:var(--white); font-size:0.82rem; font-weight:600; cursor:pointer; color:var(--teal-900); }
+.preset-btn.active{ background:var(--amber); border-color:var(--amber); color:#3A2708; }
+.demo-tag{ background:#FFF3DC; color:var(--amber-700); border:1px solid #F0D9A8; font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:999px; margin-left:6px; }
+
+/* Extra print sheet variant for the combined prescription+bill page */
+.print-sheet .rx-two-col{ display:flex; gap:10px; }
+.print-sheet .rx-two-col > div{ flex:1; }
+
+</style>
+</head>
+<body>
+
+<!-- ============================== LOGIN ============================== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="lbrand"><span class="lens"></span> <strong>Taj Eye Care and Opticals</strong></div>
+    <h1 class="display">Sign in</h1>
+    <div class="lsub">Front-desk access for staff and admin.</div>
+
+    <div class="role-tabs">
+      <div class="role-tab active" id="tabStaff" data-role="staff">Staff</div>
+      <div class="role-tab" id="tabAdmin" data-role="admin">Admin</div>
+    </div>
+
+    <form id="loginForm">
+      <div class="field" id="staffFields">
+        <label>Staff passcode</label>
+        <input type="password" id="staffPasscodeInput" autocomplete="off">
+      </div>
+      <div class="field hidden" id="adminFieldPhone">
+        <label>Admin mobile number</label>
+        <input type="tel" id="adminPhoneInput" autocomplete="off">
+      </div>
+      <div class="field hidden" id="adminFieldPass">
+        <label>Admin passcode</label>
+        <input type="password" id="adminPasscodeInput" autocomplete="off">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Sign in</button>
+      <div class="login-error" id="loginError">That doesn't look right — please check and try again.</div>
+    </form>
+
+    <div class="login-security-note">
+      <b>Note:</b> this sign-in is a simple access gate for staff vs. admin screens on this device — it isn't strong security. Anyone able to view this file's source can see the passcodes, so don't rely on it alone if this file is hosted somewhere others can reach it.
+    </div>
+  </div>
+</div>
+
+<!-- ============================== APP SHELL ============================== -->
+<div id="appShell" class="hidden">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="brand"><span class="lens"></span> Taj Eye Care and Opticals</span>
+      <span class="role-badge" id="roleBadge">STAFF</span>
+    </div>
+    <nav id="navLinks"></nav>
+    <button class="logout-btn" id="logoutBtn">Log out</button>
+  </div>
+
+<div class="view" id="view-home" data-roles="staff,admin">
+  <div class="page">
+    <h1 class="display">Front desk</h1>
+    <p class="lede">Start every customer at Optometrist for the eye test. It shows up in Shop / Billing immediately with the power already filled in.</p>
+    <div class="hero" style="display:grid; grid-template-columns:1fr 1fr; gap:22px;">
+      <div class="card" style="cursor:pointer;" onclick="goView('optometrist')">
+        <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--amber-700); font-weight:700; margin-bottom:8px;">Step 1</div>
+        <h2 class="display">Optometrist</h2>
+        <p style="color:#557876; font-size:0.92rem;">Customer details, previous power, single vision/bifocal, new power.</p>
+        <div style="font-weight:700; color:var(--teal-700); font-size:0.9rem;">Start an eye test →</div>
+      </div>
+      <div class="card" style="cursor:pointer;" onclick="goView('billing')">
+        <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--amber-700); font-weight:700; margin-bottom:8px;">Step 2</div>
+        <h2 class="display">Shop / Billing</h2>
+        <p style="color:#557876; font-size:0.92rem;">Pick a customer, confirm power, add lens, frame, delivery, payment.</p>
+        <div style="font-weight:700; color:var(--teal-700); font-size:0.9rem;">Open billing queue →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="view" id="view-optometrist" data-roles="staff,admin">
+<div class="page" style="max-width:760px;">
+  <h1 class="display">Eye test entry</h1>
+  <p class="lede">Fill in the customer, previous power, lens type and new power, then submit. It appears instantly in the Shop / Billing queue.</p>
+
+  <form id="rxForm" class="card">
+    <h2>1. Customer details</h2>
+    <div class="row row-2">
+      <div class="field"><label>Customer name *</label><input type="text" id="custName" required></div>
+      <div class="field"><label>Phone number *</label><input type="tel" id="custPhone" required pattern="[0-9]{7,15}"></div>
+    </div>
+    <div class="row row-2">
+      <div class="field"><label>Age *</label><input type="number" id="custAge" min="1" max="120" required></div>
+      <div class="field"><label>Date *</label><input type="date" id="custDate" required></div>
+    </div>
+
+    <h2 style="margin-top:24px;">2. Previous power usage</h2>
+    <div class="card-sub">Was this customer already wearing prescription glasses?</div>
+    <div class="radio-group" id="prevGroup">
+      <label class="radio-opt"><input type="radio" name="prevUsed" value="yes"> Yes, using power</label>
+      <label class="radio-opt"><input type="radio" name="prevUsed" value="no"> No previous power</label>
+    </div>
+    <div class="prev-power-wrap hidden" id="prevPowerBlock" style="margin-top:14px;">
+      <div class="power-grid">
+        <table>
+          <thead><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th></tr></thead>
+          <tbody>
+            <tr><td>Right (OD)</td>
+              <td><input class="mono" type="text" id="prevRSph" placeholder="0.00"></td>
+              <td><input class="mono" type="text" id="prevRCyl" placeholder="0.00"></td>
+              <td><input class="mono" type="text" id="prevRAxis" placeholder="0"></td>
+            </tr>
+            <tr><td>Left (OS)</td>
+              <td><input class="mono" type="text" id="prevLSph" placeholder="0.00"></td>
+              <td><input class="mono" type="text" id="prevLCyl" placeholder="0.00"></td>
+              <td><input class="mono" type="text" id="prevLAxis" placeholder="0"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2 style="margin-top:24px;">3. Single vision or bifocal</h2>
+    <div class="radio-group" id="lensCatGroup">
+      <label class="radio-opt"><input type="radio" name="lensCategory" value="single"> Single vision</label>
+      <label class="radio-opt"><input type="radio" name="lensCategory" value="bifocal"> Bifocal / progressive</label>
+    </div>
+
+    <h2 style="margin-top:24px;">4. New power — right &amp; left eye</h2>
+    <div class="power-grid">
+      <table>
+        <thead><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD (Near)</th><th>PD (mm)</th></tr></thead>
+        <tbody>
+          <tr><td>Right (OD)</td>
+            <td><input class="mono" type="text" id="newRSph" placeholder="0.00"></td>
+            <td><input class="mono" type="text" id="newRCyl" placeholder="0.00"></td>
+            <td><input class="mono" type="text" id="newRAxis" placeholder="0"></td>
+            <td><input class="mono" type="text" id="newRAdd" placeholder="0.00"></td>
+            <td><input class="mono" type="text" id="newRPd" placeholder="31.5"></td>
+          </tr>
+          <tr><td>Left (OS)</td>
+            <td><input class="mono" type="text" id="newLSph" placeholder="0.00"></td>
+            <td><input class="mono" type="text" id="newLCyl" placeholder="0.00"></td>
+            <td><input class="mono" type="text" id="newLAxis" placeholder="0"></td>
+            <td><input class="mono" type="text" id="newLAdd" placeholder="0.00"></td>
+            <td><input class="mono" type="text" id="newLPd" placeholder="31.5"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="help">ADD is the near/reading power. PD is pupillary distance per eye — leave blank if not measured.</div>
+    <div class="field" style="margin-top:14px;"><label>Note (optional)</label><textarea id="rxNote" placeholder="Any remarks for the optician…"></textarea></div>
+
+    <div class="btn-row">
+      <button type="submit" class="btn btn-amber">Submit to Shop / Billing →</button>
+    </div>
+  </form>
+
+  <div class="success-box hidden" id="successBox" style="background:var(--good-bg); border:1px solid #bfe0cc; border-radius:10px; padding:18px 20px; margin-top:16px;">
+    <h3 style="color:var(--good); margin-bottom:6px;">✓ Sent to Shop / Billing</h3>
+    <p id="successText" style="margin:0 0 12px; font-size:0.9rem;"></p>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn btn-primary" id="printRxFromOptoBtn">Print prescription (half A4)</button>
+      <button class="btn btn-ghost" id="newTestBtn">Start another eye test</button>
+      <button class="btn btn-ghost" onclick="goView('billing')">Go to Shop / Billing →</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="view" id="view-billing" data-roles="staff,admin">
+<div class="page">
+  <h1 class="display">Shop / Optician billing</h1>
+  <p class="lede">Pick a customer below — their power comes straight from the optometrist's entry. Or start a walk-in bill directly if there's no eye test on file.</p>
+
+  <div class="grid-2">
+    <div>
+      <div class="card" style="max-height:640px; overflow-y:auto;">
+        <h2>Today's queue</h2>
+        <input type="text" id="blSearchBox" placeholder="Search by name or phone…" style="margin-bottom:10px;">
+        <button type="button" class="btn btn-ghost" id="blPullBtn" style="width:100%; margin-bottom:6px;">↓ Pull from Excel Sheet</button>
+        <button type="button" class="btn btn-ghost" id="blPushBtn" style="width:100%; margin-bottom:8px;">↑ Sync to Excel Sheet</button>
+        <button type="button" class="btn btn-ghost" id="walkInBtn" style="width:100%; margin-bottom:12px;">+ New walk-in bill (no eye test)</button>
+        <div id="blQueueList"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" id="blNoSelectionCard">
+        <div style="text-align:center; color:#7C9291; padding:60px 20px;">Select a customer from the queue, or start a walk-in bill.</div>
+      </div>
+
+      <form id="billForm" class="hidden">
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <h2 id="blCustHeading">—</h2>
+            <span class="badge badge-wait" id="blStatusBadge">Awaiting billing</span>
+          </div>
+          <div class="card-sub">Customer &amp; power — correct if needed</div>
+          <div class="row row-4">
+            <div class="field"><label>Name</label><input type="text" id="bName"></div>
+            <div class="field"><label>Phone</label><input type="tel" id="bPhone"></div>
+            <div class="field"><label>Age</label><input type="number" id="bAge"></div>
+            <div class="field"><label>Date</label><input type="date" id="bDate"></div>
+          </div>
+          <div class="field">
+            <label>Lens category</label>
+            <select id="bLensCategory"><option value="single">Single vision</option><option value="bifocal">Bifocal / progressive</option></select>
+          </div>
+          <div class="power-view">
+            <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:#557876; font-weight:700; margin:8px 0;">New power (from eye test, if any)</div>
+            <table style="width:100%; border-collapse:collapse; font-family:'IBM Plex Mono',monospace; font-size:0.85rem;">
+              <thead><tr><th style="text-align:left; color:#557876; font-size:0.7rem;">Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th><th>PD</th></tr></thead>
+              <tbody>
+                <tr><td>R</td>
+                  <td><input class="mono" type="text" id="bRSph"></td>
+                  <td><input class="mono" type="text" id="bRCyl"></td>
+                  <td><input class="mono" type="text" id="bRAxis"></td>
+                  <td><input class="mono" type="text" id="bRAdd"></td>
+                  <td><input class="mono" type="text" id="bRPd"></td>
+                </tr>
+                <tr><td>L</td>
+                  <td><input class="mono" type="text" id="bLSph"></td>
+                  <td><input class="mono" type="text" id="bLCyl"></td>
+                  <td><input class="mono" type="text" id="bLAxis"></td>
+                  <td><input class="mono" type="text" id="bLAdd"></td>
+                  <td><input class="mono" type="text" id="bLPd"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="field" style="margin-top:10px;"><label>Optometrist's note</label><input type="text" id="bNote"></div>
+        </div>
+
+        <div class="card">
+          <h2>Order details</h2>
+          <div class="row row-2">
+            <div class="field"><label>Lens type *</label>
+              <select id="lensType" required>
+                <option value="">Select lens type</option>
+                <option>Single Vision - Basic</option><option>Single Vision - Anti-glare</option>
+                <option>Single Vision - Blue Cut</option><option>Bifocal - Standard</option>
+                <option>Progressive - Standard</option><option>Progressive - Premium</option>
+                <option>High Index Thin Lens</option><option>Photochromic</option>
+              </select>
+            </div>
+            <div class="field"><label>Frame type *</label>
+              <select id="frameType" required>
+                <option value="">Select frame type</option>
+                <option>Full Rim - Metal</option><option>Full Rim - Acetate</option>
+                <option>Half Rim</option><option>Rimless</option>
+                <option>Customer's Own Frame</option><option>Kids Frame</option>
+              </select>
+            </div>
+          </div>
+          <div class="row row-2">
+            <div class="field"><label>Delivery date *</label><input type="date" id="deliveryDate" required></div>
+            <div class="field"><label>Delivery time *</label><input type="time" id="deliveryTime" required></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Payment</h2>
+          <div class="row row-2">
+            <div class="field"><label>Total amount (₹) *</label><input type="number" id="totalAmount" min="0" step="1" required></div>
+            <div class="field"><label>Advance amount (₹)</label><input type="number" id="advanceAmount" min="0" step="1" value="0"></div>
+          </div>
+          <div class="field">
+            <label>Payment status</label>
+            <div class="radio-group" id="paymentStatusGroup">
+              <label class="radio-opt"><input type="radio" name="paymentStatus" value="full"> Paid in full</label>
+              <label class="radio-opt"><input type="radio" name="paymentStatus" value="partial"> Advance paid, balance due</label>
+            </div>
+          </div>
+          <div class="amount-box">
+            <div class="amount-row"><span>Total amount</span><span id="viewTotal">₹0</span></div>
+            <div class="amount-row"><span>Advance paid</span><span id="viewAdvance">₹0</span></div>
+            <div class="amount-row total"><span>Balance due</span><span id="viewBalance">₹0</span></div>
+          </div>
+          <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:#557876; font-weight:700; margin:14px 0 8px;">Payment QR</div>
+          <div class="qr-box">
+            <div class="qr-img-wrap" id="billQrWrap"><span class="empty-note">No QR set — add one in Settings</span></div>
+            <div class="help">Scan to pay the balance. Change the QR any time from Settings — it updates everywhere instantly.</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">Save billing</button>
+          <button type="button" class="btn btn-ghost" id="blDeselectBtn">Close</button>
+        </div>
+
+        <div class="card">
+          <h2>Print</h2>
+          <div class="card-sub">Available once lens type, frame type and total amount are filled in.</div>
+          <div class="btn-row" style="margin-top:0;">
+            <button type="button" class="btn btn-ghost" id="printRxOnlyBtn">Print prescription (half A4)</button>
+            <button type="button" class="btn btn-ghost" id="printBillOnlyBtn">Print bill only (half A4)</button>
+            <button type="button" class="btn btn-amber" id="printCombinedBtn">Print prescription + bill (one sheet)</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="card hidden" id="blSuccessBox" style="background:var(--good-bg); border:1px solid #bfe0cc;">
+        <h3 style="color:var(--good); margin-bottom:6px;">✓ Billing saved</h3>
+        <p id="blSuccessText" style="margin:0 0 12px; font-size:0.9rem;"></p>
+        <div class="btn-row" style="margin-top:0;">
+          <button type="button" class="btn btn-primary" id="blPrintRxBtn">Print prescription</button>
+          <button type="button" class="btn btn-ghost" id="blPrintBillBtn">Print bill only</button>
+          <button type="button" class="btn btn-amber" id="blPrintCombinedBtn">Print prescription + bill</button>
+          <button type="button" class="btn btn-ghost" id="blNextCustomerBtn">Start next customer →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="view" id="view-records" data-roles="admin">
+<div class="page">
+  <h1 class="display">Previous data</h1>
+  <p class="lede">Every eye test and bill, searchable — auto-refreshed from your Google Sheet every 45 seconds while signed in, or pull immediately with the button below.</p>
+
+  <div class="card">
+    <div class="filters" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px;">
+      <div class="field" style="flex:2; min-width:220px; margin-bottom:0;"><label>Search name or phone</label><input type="text" id="recSearchBox" placeholder="e.g. Ahmed or 98765…"></div>
+      <div class="field" style="min-width:170px; margin-bottom:0;"><label>Status</label>
+        <select id="recStatusFilter"><option value="">All</option><option value="eyetest">Awaiting billing</option><option value="billed">Billed</option></select>
+      </div>
+      <div class="field" style="min-width:150px; margin-bottom:0;"><label>From date</label><input type="date" id="recFromDate"></div>
+      <div class="field" style="min-width:150px; margin-bottom:0;"><label>To date</label><input type="date" id="recToDate"></div>
+      <div class="field" style="flex:none; margin-bottom:0;"><label>&nbsp;</label><button class="btn btn-ghost" id="recClearFiltersBtn">Clear</button></div>
+    </div>
+
+    <div class="preset-row">
+      <button class="preset-btn" data-preset="today">Today</button>
+      <button class="preset-btn" data-preset="week">This week</button>
+      <button class="preset-btn" data-preset="year">This year</button>
+      <button class="preset-btn" data-preset="">All time</button>
+    </div>
+
+    <div class="btn-row" style="margin-top:0; margin-bottom:14px;">
+      <button class="btn btn-primary" id="recPullSheetBtn">↓ Pull from Excel Sheet</button>
+      <button class="btn btn-amber" id="recPushSheetBtn">↑ Sync to Excel Sheet</button>
+      <button class="btn btn-ghost" id="recExportCsvBtn">Export CSV (Excel)</button>
+    </div>
+
+    <div class="count-line" id="recCountLine" style="color:#557876; font-size:0.85rem; margin-bottom:10px;"></div>
+
+    <div style="overflow-x:auto;">
+      <table class="records-table" style="width:100%; border-collapse:collapse; font-size:0.86rem;">
+        <thead>
+          <tr>
+            <th>Date</th><th>Time</th><th>Name</th><th>Phone</th><th>Age</th><th>Status</th>
+            <th>Lens category</th><th>Lens type</th><th>Frame</th>
+            <th>Total</th><th>Advance</th><th>Balance</th><th>Payment</th>
+          </tr>
+        </thead>
+        <tbody id="recTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card hidden" id="recDetailCard">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <h2 id="recDName">—</h2>
+      <span class="badge" id="recDStatusBadge"></span>
+    </div>
+    <div class="card-sub">Recorded <span id="recDDate"></span></div>
+
+    <div class="detail-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+      <div>
+        <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:#557876; font-weight:700; margin-bottom:8px;">Customer &amp; power</div>
+        <dl class="kv" style="display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:0.88rem;">
+          <dt style="color:#557876; font-weight:600;">Phone</dt><dd id="recDPhone" style="margin:0;"></dd>
+          <dt style="color:#557876; font-weight:600;">Age</dt><dd id="recDAge" style="margin:0;"></dd>
+          <dt style="color:#557876; font-weight:600;">Previous power</dt><dd id="recDPrevUsed" style="margin:0;"></dd>
+          <dt style="color:#557876; font-weight:600;">Lens category</dt><dd id="recDLensCat" style="margin:0;"></dd>
+        </dl>
+        <table style="width:100%; border-collapse:collapse; font-family:'IBM Plex Mono',monospace; font-size:0.85rem; margin-top:10px;">
+          <thead><tr><th style="text-align:left; color:#557876; font-size:0.7rem;">Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th><th>PD</th></tr></thead>
+          <tbody>
+            <tr><td>R</td><td id="recDRSph"></td><td id="recDRCyl"></td><td id="recDRAxis"></td><td id="recDRAdd"></td><td id="recDRPd"></td></tr>
+            <tr><td>L</td><td id="recDLSph"></td><td id="recDLCyl"></td><td id="recDLAxis"></td><td id="recDLAdd"></td><td id="recDLPd"></td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.85rem; margin-top:10px;" id="recDNoteWrap"><b>Note:</b> <span id="recDNote"></span></p>
+      </div>
+      <div>
+        <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.06em; color:#557876; font-weight:700; margin-bottom:8px;">Order &amp; payment</div>
+        <dl class="kv" id="recDBillingBlock" style="display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:0.88rem;">
+          <dt style="color:#557876; font-weight:600;">Lens type</dt><dd id="recDLensType" style="margin:0;"></dd>
+          <dt style="color:#557876; font-weight:600;">Frame type</dt><dd id="recDFrameType" style="margin:0;"></dd>
+          <dt style="color:#557876; font-weight:600;">Delivery</dt><dd id="recDDelivery" style="margin:0;"></dd>
+          <dt style="color:#557876; font-weight:600;">Total amount</dt><dd id="recDTotal" style="margin:0;"></dd>
+          <dt style="color:#557876; font-weight:600;">Advance paid</dt><dd id="recDAdvance" style="margin:0;"></dd>
+          <dt style="color:#557876; font-weight:600;">Balance due</dt><dd id="recDBalance" style="margin:0;"></dd>
+        </dl>
+        <p class="empty-note hidden" id="recDNoBilling">Not billed yet — open in Shop / Billing to complete this order.</p>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="recOpenBillingBtn">Open in Shop / Billing →</button>
+      <button class="btn btn-ghost" id="recReprintRxBtn">Reprint prescription</button>
+      <button class="btn btn-ghost hidden" id="recReprintBillBtn">Reprint bill only</button>
+      <button class="btn btn-ghost hidden" id="recReprintCombinedBtn">Reprint combined</button>
+      <button class="btn btn-ghost" id="recDeleteRecordBtn" style="color:var(--bad); border-color:#eec7c2;">Delete record</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="view" id="view-inventory" data-roles="admin">
+<div class="page">
+  <h1 class="display">Inventory</h1>
+  <p class="lede">Track frame and lens stock. Every add, edit, and removal syncs to your Google Sheet automatically, and refreshes in the background every 45 seconds while you're signed in.</p>
+
+  <div class="card">
+    <h2 id="invFormTitle">Add item</h2>
+    <input type="hidden" id="invEditId">
+    <div class="row row-4">
+      <div class="field"><label>Item name *</label><input type="text" id="invName" placeholder="e.g. Ray-Ban RB2140"></div>
+      <div class="field"><label>Category *</label>
+        <select id="invCategory"><option value="frame">Frame</option><option value="lens">Lens</option><option value="accessory">Accessory</option></select>
+      </div>
+      <div class="field"><label>Stock quantity *</label><input type="number" id="invStock" min="0" step="1"></div>
+      <div class="field"><label>Price (₹)</label><input type="number" id="invPrice" min="0" step="1"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="invSaveBtn">Save item</button>
+      <button class="btn btn-ghost hidden" id="invCancelEditBtn">Cancel edit</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
+      <h2 style="margin:0;">Stock list</h2>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <input type="text" id="invSearchBox" placeholder="Search inventory…" style="max-width:200px;">
+        <button type="button" class="btn btn-ghost" id="invPullBtn">↓ Pull</button>
+        <button type="button" class="btn btn-amber" id="invPushBtn">↑ Sync to Excel Sheet</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="inv-table">
+        <thead><tr><th>Name</th><th>Category</th><th>Stock</th><th>Price</th><th>Updated</th><th></th></tr></thead>
+        <tbody id="invTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="view" id="view-dashboard" data-roles="admin">
+<div class="page">
+  <h1 class="display">Sales dashboard</h1>
+  <p class="lede">Revenue and payment status across your billed customers. Refreshes in the background every 45 seconds while you're signed in.</p>
+
+  <div class="preset-row" style="justify-content:space-between; display:flex; flex-wrap:wrap; gap:8px;">
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="preset-btn dash-preset" data-preset="today">Today</button>
+      <button class="preset-btn dash-preset" data-preset="week">This week</button>
+      <button class="preset-btn dash-preset" data-preset="year">This year</button>
+      <button class="preset-btn dash-preset active" data-preset="">All time</button>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button type="button" class="btn btn-ghost" id="dashPullBtn">↓ Pull from Excel Sheet</button>
+      <button type="button" class="btn btn-amber" id="dashPushBtn">↑ Sync to Excel Sheet</button>
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-card"><div class="kpi-label">Bills</div><div class="kpi-value" id="kpiCount">0</div></div>
+    <div class="kpi-card"><div class="kpi-label">Total revenue</div><div class="kpi-value" id="kpiRevenue">₹0</div></div>
+    <div class="kpi-card"><div class="kpi-label">Advance collected</div><div class="kpi-value" id="kpiAdvance">₹0</div></div>
+    <div class="kpi-card"><div class="kpi-label">Balance outstanding</div><div class="kpi-value" id="kpiBalance">₹0</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Billed customers in range</h2>
+    <div style="overflow-x:auto;">
+      <table class="records-table" style="width:100%; border-collapse:collapse; font-size:0.86rem;">
+        <thead><tr><th>Date</th><th>Name</th><th>Phone</th><th>Lens</th><th>Frame</th><th>Total</th><th>Advance</th><th>Balance</th></tr></thead>
+        <tbody id="dashTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="view" id="view-settings" data-roles="admin">
+<div class="page" style="max-width:680px;">
+  <h1 class="display">Settings</h1>
+  <p class="lede">These apply across the whole app on this device.</p>
+
+  <div class="card">
+    <h2>Payment QR code</h2>
+    <div class="card-sub">Shown on the billing page and printed on the bill. Replace it any time — e.g. when your UPI ID changes.</div>
+    <div class="qr-box">
+      <div class="qr-img-wrap" id="qrPreviewWrap"><span class="empty-note" id="qrEmpty">No QR set</span><img id="qrPreview" class="hidden"></div>
+      <div>
+        <input type="file" id="qrFile" accept="image/*">
+        <div class="help">PNG or JPG of your UPI/payment QR code.</div>
+        <div class="btn-row"><button class="btn btn-primary" id="saveQrBtn">Save QR</button><button class="btn btn-ghost" id="clearQrBtn">Remove</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Shop details for printouts</h2>
+    <div class="field"><label>Clinic / shop name</label><input type="text" id="shopName"></div>
+    <div class="row row-2">
+      <div class="field"><label>Address</label><input type="text" id="shopAddress"></div>
+      <div class="field"><label>Phone</label><input type="text" id="shopPhone"></div>
+    </div>
+    <button class="btn btn-primary" id="saveShopBtn">Save shop details</button>
+  </div>
+
+  <div class="card">
+    <h2>Google Sheet sync</h2>
+    <div class="card-sub">Paste the Web App URL from your deployed Google Apps Script. Every eye test and bill is then pushed to your Sheet automatically, and admin logins pull in the full history.</div>
+    <div class="field"><label>Apps Script Web App URL</label><input type="text" id="sheetUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
+    <button class="btn btn-primary" id="saveSheetBtn">Save link</button>
+    <div class="help" id="sheetStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>Staff passcode</h2>
+    <div class="card-sub">Staff use this single shared passcode to sign in to Home, Optometrist and Billing. Admin sign-in uses the fixed admin mobile number and passcode.</div>
+    <div class="field"><label>Staff passcode</label><input type="text" id="staffPassInput"></div>
+    <button class="btn btn-primary" id="saveStaffPassBtn">Save staff passcode</button>
+  </div>
+
+  <div class="card">
+    <h2>Demo data</h2>
+    <div class="card-sub">A sample "Demo Customer" entry is included so you can see the app working end-to-end. Remove it once you're ready to go live.</div>
+    <button class="btn btn-ghost" id="removeDemoBtn" style="color:var(--bad); border-color:#eec7c2;">Remove demo customer</button>
+  </div>
+</div>
+</div>
+
+
+
+</div>
+
+<!-- ============ PRESCRIPTION ONLY (half A4) ============ -->
+<div class="print-sheet" id="printRx">
+  <div class="rx-head">
+    <div><div class="clinic" id="prxClinicName"></div><div class="doc-type" id="prxClinicAddr"></div></div>
+    <div class="doc-type">Eye Prescription</div>
+  </div>
+  <div class="rx-meta">
+    <b>Name:</b> <span id="prxName"></span> &nbsp;|&nbsp; <b>Age:</b> <span id="prxAge"></span><br>
+    <b>Phone:</b> <span id="prxPhone"></span> &nbsp;|&nbsp; <b>Date:</b> <span id="prxDate"></span><br>
+    <b>Lens type:</b> <span id="prxLensCat"></span>
+  </div>
+  <div id="prxPrevBlock" class="hidden">
+    <div style="font-size:0.75rem; text-transform:uppercase; color:#557876; margin-bottom:4px;">Previous power</div>
+    <table class="rx-table">
+      <thead><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th></tr></thead>
+      <tbody>
+        <tr><td>R</td><td id="prxPrevRSph"></td><td id="prxPrevRCyl"></td><td id="prxPrevRAxis"></td></tr>
+        <tr><td>L</td><td id="prxPrevLSph"></td><td id="prxPrevLCyl"></td><td id="prxPrevLAxis"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="font-size:0.75rem; text-transform:uppercase; color:#557876; margin-bottom:4px;">New power</div>
+  <table class="rx-table">
+    <thead><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th><th>PD</th></tr></thead>
+    <tbody>
+      <tr><td>R</td><td id="prxNewRSph"></td><td id="prxNewRCyl"></td><td id="prxNewRAxis"></td><td id="prxNewRAdd"></td><td id="prxNewRPd"></td></tr>
+      <tr><td>L</td><td id="prxNewLSph"></td><td id="prxNewLCyl"></td><td id="prxNewLAxis"></td><td id="prxNewLAdd"></td><td id="prxNewLPd"></td></tr>
+    </tbody>
+  </table>
+  <div class="rx-note" id="prxNoteWrap"><b>Note:</b> <span id="prxNote"></span></div>
+  <div class="rx-foot">Prescribed by optometrist &nbsp;•&nbsp; Valid for spectacle dispensing at this clinic.</div>
+</div>
+
+<!-- ============ BILL ONLY — frame, lens, amount, delivery (no power) ============ -->
+<div class="print-sheet" id="printBillOnly">
+  <div class="rx-head">
+    <div><div class="clinic" id="pboClinicName"></div><div class="doc-type" id="pboClinicAddr"></div></div>
+    <div class="doc-type">Sales Bill</div>
+  </div>
+  <div class="rx-meta">
+    <b>Name:</b> <span id="pboName"></span> &nbsp;|&nbsp; <b>Phone:</b> <span id="pboPhone"></span><br>
+    <b>Date:</b> <span id="pboDate"></span> &nbsp;|&nbsp; <b>Estimated delivery:</b> <span id="pboDelivery"></span>
+  </div>
+  <div class="rx-note"><b>Lens type:</b> <span id="pboLensType"></span><br><b>Frame type:</b> <span id="pboFrameType"></span></div>
+  <table class="amt-table">
+    <tr><td>Total amount</td><td style="text-align:right;" id="pboTotal"></td></tr>
+    <tr><td>Advance paid</td><td style="text-align:right;" id="pboAdvance"></td></tr>
+    <tr class="total"><td>Balance due</td><td style="text-align:right;" id="pboBalance"></td></tr>
+  </table>
+  <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
+    <img id="pboQr" class="qr-print hidden"><span style="font-size:0.7rem; color:#557876;">Scan to pay balance</span>
+  </div>
+  <div class="rx-foot">Thank you for choosing us. Please bring this slip at the time of delivery.</div>
+</div>
+
+<!-- ============ COMBINED — prescription + bill, one half-A4 sheet ============ -->
+<div class="print-sheet" id="printCombined" style="font-size:0.85em;">
+  <div class="rx-head">
+    <div><div class="clinic" id="pcmClinicName"></div><div class="doc-type" id="pcmClinicAddr"></div></div>
+    <div class="doc-type">Prescription &amp; Bill</div>
+  </div>
+  <div class="rx-meta">
+    <b>Name:</b> <span id="pcmName"></span> &nbsp;|&nbsp; <b>Age:</b> <span id="pcmAge"></span> &nbsp;|&nbsp; <b>Phone:</b> <span id="pcmPhone"></span><br>
+    <b>Date:</b> <span id="pcmDate"></span> &nbsp;|&nbsp; <b>Lens category:</b> <span id="pcmLensCat"></span> &nbsp;|&nbsp; <b>Delivery:</b> <span id="pcmDelivery"></span>
+  </div>
+
+  <div id="pcmPrevBlock" class="hidden">
+    <div style="font-size:0.7rem; text-transform:uppercase; color:#557876; margin-bottom:2px;">Previous power</div>
+    <table class="rx-table">
+      <thead><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th></tr></thead>
+      <tbody>
+        <tr><td>R</td><td id="pcmPrevRSph"></td><td id="pcmPrevRCyl"></td><td id="pcmPrevRAxis"></td></tr>
+        <tr><td>L</td><td id="pcmPrevLSph"></td><td id="pcmPrevLCyl"></td><td id="pcmPrevLAxis"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="font-size:0.7rem; text-transform:uppercase; color:#557876; margin-bottom:2px;">New power</div>
+  <table class="rx-table">
+    <thead><tr><th>Eye</th><th>SPH</th><th>CYL</th><th>AXIS</th><th>ADD</th><th>PD</th></tr></thead>
+    <tbody>
+      <tr><td>R</td><td id="pcmNewRSph"></td><td id="pcmNewRCyl"></td><td id="pcmNewRAxis"></td><td id="pcmNewRAdd"></td><td id="pcmNewRPd"></td></tr>
+      <tr><td>L</td><td id="pcmNewLSph"></td><td id="pcmNewLCyl"></td><td id="pcmNewLAxis"></td><td id="pcmNewLAdd"></td><td id="pcmNewLPd"></td></tr>
+    </tbody>
+  </table>
+  <div class="rx-note" id="pcmNoteWrap" style="margin-bottom:6px;"><b>Note:</b> <span id="pcmNote"></span></div>
+
+  <div class="rx-note"><b>Lens type:</b> <span id="pcmLensType"></span><br><b>Frame type:</b> <span id="pcmFrameType"></span></div>
+  <table class="amt-table">
+    <tr><td>Total amount</td><td style="text-align:right;" id="pcmTotal"></td></tr>
+    <tr><td>Advance paid</td><td style="text-align:right;" id="pcmAdvance"></td></tr>
+    <tr class="total"><td>Balance due</td><td style="text-align:right;" id="pcmBalance"></td></tr>
+  </table>
+  <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">
+    <img id="pcmQr" class="qr-print hidden"><span style="font-size:0.65rem; color:#557876;">Scan to pay balance</span>
+  </div>
+  <div class="rx-foot">Prescribed by optometrist &nbsp;•&nbsp; Please bring this slip at the time of delivery.</div>
+</div>
+
+
+<script>
+/* ==========================================================================
+   Taj Eye Care and Opticals — core app logic
+   Single-document SPA: every "page" is a <div class="view"> in the same
+   HTML document, so there is exactly one JS context and one localStorage —
+   this is what makes data flow instantly and reliably between screens
+   (the earlier iframe-based build could lose that link; this version can't).
+   ========================================================================== */
+
+const STORAGE_KEY   = 'opt_records';
+const INV_KEY        = 'opt_inventory';
+const QR_KEY        = 'opt_qr_image';
+const SHEET_URL_KEY  = 'opt_sheet_url';
+const SHOP_INFO_KEY  = 'opt_shop_info';
+const STAFF_PASS_KEY = 'opt_staff_passcode';
+const SESSION_KEY    = 'opt_session_role';
+const DEMO_FLAG_KEY  = 'opt_demo_seeded';
+
+const ADMIN_PHONE    = '8179786411';
+const ADMIN_PASSCODE = 'taj2019';
+const DEFAULT_STAFF_PASSCODE = 'taj-staff';
+const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyAoHS4Y2pV-FopuAMdbksR9oseuPbYiXbwEoEkHqo3x5nRw5qvNRBPr_LbNFeb_QNT/exec';
+
+/* ---------- record CRUD ---------- */
+
+function getAllRecords(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }catch(e){ return []; }
+}
+function saveAllRecords(records){ localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }
+function getRecord(id){ return getAllRecords().find(r => r.id === id) || null; }
+
+function upsertRecord(record){
+  const all = getAllRecords();
+  const idx = all.findIndex(r => r.id === record.id);
+  record.updatedAt = new Date().toISOString();
+  if(idx === -1){ record.createdAt = record.createdAt || record.updatedAt; all.unshift(record); }
+  else { all[idx] = record; }
+  saveAllRecords(all);
+  return record;
+}
+function deleteRecord(id){ saveAllRecords(getAllRecords().filter(r => r.id !== id)); }
+function getPendingBillingRecords(){ return getAllRecords().filter(r => r.status === 'eyetest' || r.status === 'billed'); }
+
+function uid(){ return 'C' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,5).toUpperCase(); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function nowTimeHM(){ const d = new Date(); return d.toTimeString().slice(0,5); }
+function money(n){ n = Number(n) || 0; return '₹' + n.toLocaleString('en-IN', {maximumFractionDigits:2}); }
+
+/* ---------- inventory CRUD ---------- */
+
+function getInventory(){
+  try{ return JSON.parse(localStorage.getItem(INV_KEY)) || []; }catch(e){ return []; }
+}
+function saveInventory(items){ localStorage.setItem(INV_KEY, JSON.stringify(items)); }
+function upsertInventoryItem(item){
+  const all = getInventory();
+  const idx = all.findIndex(i => i.id === item.id);
+  item.updatedAt = new Date().toISOString();
+  if(idx === -1){ all.unshift(item); } else { all[idx] = item; }
+  saveInventory(all);
+}
+function deleteInventoryItem(id){ saveInventory(getInventory().filter(i => i.id !== id)); }
+
+/* ---------- QR / shop info ---------- */
+
+function getQrImage(){ return localStorage.getItem(QR_KEY) || ''; }
+function setQrImage(dataUrl){ localStorage.setItem(QR_KEY, dataUrl); }
+
+function getShopInfo(){
+  try{
+    const stored = JSON.parse(localStorage.getItem(SHOP_INFO_KEY));
+    if(stored) return stored;
+  }catch(e){ /* fall through to default */ }
+  return {
+    name: 'Taj Eye Care and Opticals',
+    address: 'Opposite Basha Hospital, Muslim Street, near Girls High School, Tuni 533401',
+    phone: '8179786411, 9063411352'
+  };
+}
+function setShopInfo(info){ localStorage.setItem(SHOP_INFO_KEY, JSON.stringify(info)); }
+
+/* ---------- Google Sheets sync ---------- */
+
+function getSheetUrl(){ return localStorage.getItem(SHEET_URL_KEY) || DEFAULT_SHEET_URL; }
+function setSheetUrl(url){ localStorage.setItem(SHEET_URL_KEY, url.trim()); }
+
+// Writes go through the same JSONP channel as reads (a <script> tag, not
+// fetch/XHR), because some browsers or privacy/ad-block extensions
+// silently block fetch() POST requests to script.google.com while leaving
+// plain <script src> loads alone. Since reads already prove that channel
+// works reliably, routing writes through it too sidesteps the problem
+// instead of trying to diagnose every possible browser configuration.
+// (Records/items are compact JSON, well under typical URL length limits.)
+
+function syncRecordToSheet(record){
+  const url = getSheetUrl();
+  if(!url) return Promise.resolve({skipped:true});
+  return jsonpRequest(url, {action:'saveRecord', data: JSON.stringify(record)}).then(data => {
+    if(data && data.ok) return {ok:true};
+    console.warn('Sheet sync failed:', data && data.error);
+    return {ok:false, error: data && data.error};
+  });
+}
+
+function syncInventoryItemToSheet(item){
+  const url = getSheetUrl();
+  if(!url) return Promise.resolve({skipped:true});
+  return jsonpRequest(url, {action:'saveInventoryItem', data: JSON.stringify(item)}).then(data => {
+    if(data && data.ok) return {ok:true};
+    console.warn('Inventory sync failed:', data && data.error);
+    return {ok:false, error: data && data.error};
+  });
+}
+
+function deleteInventoryItemFromSheet(id){
+  const url = getSheetUrl();
+  if(!url) return Promise.resolve({skipped:true});
+  return jsonpRequest(url, {action:'deleteInventoryItem', id}).then(data => {
+    if(data && data.ok) return {ok:true};
+    console.warn('Inventory delete sync failed:', data && data.error);
+    return {ok:false, error: data && data.error};
+  });
+}
+
+// Apps Script Web Apps don't send CORS headers, so fetch() can't read the
+// response cross-origin even when the request itself succeeds (this is
+// what caused "Could not reach the Sheet" even with a correct deployment).
+// JSONP via a <script> tag isn't subject to that restriction, so every
+// read from the Sheet goes through this helper instead of fetch().
+function jsonpRequest(url, params){
+  return new Promise((resolve) => {
+    const cbName = '__sheetCb_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    const sep = url.includes('?') ? '&' : '?';
+    const query = Object.entries(params).map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+    const script = document.createElement('script');
+    let done = false;
+
+    const cleanup = () => {
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+      clearTimeout(timer);
+    };
+    const timer = setTimeout(()=>{
+      if(done) return;
+      done = true; cleanup();
+      console.warn('Sheet request timed out');
+      resolve(null);
+    }, 15000);
+
+    window[cbName] = function(data){
+      if(done) return;
+      done = true; cleanup();
+      resolve(data);
+    };
+    script.onerror = function(){
+      if(done) return;
+      done = true; cleanup();
+      console.warn('Sheet script load failed');
+      resolve(null);
+    };
+
+    script.src = url + sep + query + '&callback=' + cbName;
+    document.body.appendChild(script);
+  });
+}
+
+function fetchRecordsFromSheet(){
+  const url = getSheetUrl();
+  if(!url) return Promise.resolve({skipped:true});
+  return jsonpRequest(url, {action:'listRecords'}).then(data => {
+    if(!data || !data.ok || !Array.isArray(data.records)) return {ok:false};
+    const local = getAllRecords();
+    const byId = {};
+    local.forEach(r => byId[r.id] = r);
+    data.records.forEach(remote => {
+      const existing = byId[remote.id];
+      if(!existing || (remote.updatedAt && (!existing.updatedAt || remote.updatedAt > existing.updatedAt))){
+        byId[remote.id] = remote;
+      }
+    });
+    saveAllRecords(Object.values(byId).sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||'')));
+    return {ok:true, count:data.records.length};
+  });
+}
+
+function fetchInventoryFromSheet(){
+  const url = getSheetUrl();
+  if(!url) return Promise.resolve({skipped:true});
+  return jsonpRequest(url, {action:'listInventory'}).then(data => {
+    if(!data || !data.ok || !Array.isArray(data.items)) return {ok:false};
+    const local = getInventory();
+    const byId = {};
+    local.forEach(i => byId[i.id] = i);
+    data.items.forEach(remote => {
+      const existing = byId[remote.id];
+      if(!existing || (remote.updatedAt && (!existing.updatedAt || remote.updatedAt > existing.updatedAt))){
+        byId[remote.id] = remote;
+      }
+    });
+    saveInventory(Object.values(byId));
+    return {ok:true, count:data.items.length};
+  });
+}
+
+/* ---------- session / roles ----------
+   NOTE: this is a client-side workflow gate, not real authentication.
+   Anyone who can view this file's source can see the passcodes below.
+   Do not rely on this alone to protect sensitive business data if the
+   file is hosted somewhere others could reach. ---------- */
+
+function getStaffPasscode(){ return localStorage.getItem(STAFF_PASS_KEY) || DEFAULT_STAFF_PASSCODE; }
+function setStaffPasscode(pass){ localStorage.setItem(STAFF_PASS_KEY, pass.trim()); }
+
+function getSession(){ return localStorage.getItem(SESSION_KEY) || null; } // 'staff' | 'admin' | null
+function setSession(role){ localStorage.setItem(SESSION_KEY, role); }
+function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+/* ---------- CSV export ---------- */
+
+function recordsToCsv(rows){
+  const headers = ['Date','Time','Name','Phone','Age','Status','Lens Category',
+    'R SPH','R CYL','R AXIS','R ADD','R PD','L SPH','L CYL','L AXIS','L ADD','L PD',
+    'Lens Type','Frame Type','Delivery Date','Delivery Time',
+    'Total Amount','Advance Amount','Balance Amount','Payment Status'];
+  const lines = [headers.join(',')];
+  rows.forEach(r=>{
+    const b = r.billing || {};
+    const time = (r.createdAt || '').slice(11,16);
+    const vals = [r.date, time, r.name, r.phone, r.age, r.status, r.lensCategory,
+      r.power.rSph, r.power.rCyl, r.power.rAxis, r.power.rAdd, r.power.rPd,
+      r.power.lSph, r.power.lCyl, r.power.lAxis, r.power.lAdd, r.power.lPd,
+      b.lensType||'', b.frameType||'', b.deliveryDate||'', b.deliveryTime||'',
+      b.totalAmount||'', b.advanceAmount||'', b.balanceAmount||'', b.paymentStatus||''];
+    lines.push(vals.map(v => `"${String(v??'').replace(/"/g,'""')}"`).join(','));
+  });
+  return lines.join('\n');
+}
+function downloadCsv(csvText, filename){
+  const blob = new Blob([csvText], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+/* ---------- date-range presets, used by Records + Dashboard ---------- */
+
+function presetRange(preset){
+  const now = new Date();
+  const toISO = (d) => d.toISOString().slice(0,10);
+  if(preset === 'today') return { from: toISO(now), to: toISO(now) };
+  if(preset === 'week'){
+    const start = new Date(now); start.setDate(now.getDate() - now.getDay());
+    return { from: toISO(start), to: toISO(now) };
+  }
+  if(preset === 'year'){
+    const start = new Date(now.getFullYear(), 0, 1);
+    return { from: toISO(start), to: toISO(now) };
+  }
+  return { from:'', to:'' };
+}
+
+/* ---------- demo seed (item #8: one working example) ---------- */
+
+function seedDemoIfEmpty(){
+  if(localStorage.getItem(DEMO_FLAG_KEY)) return;
+  localStorage.setItem(DEMO_FLAG_KEY, '1');
+  if(getAllRecords().length > 0) return; // don't clutter real data
+  const demo = {
+    id: uid(),
+    name: 'Demo Customer',
+    phone: '9999999999',
+    age: '34',
+    date: todayISO(),
+    prevPowerUsed: 'yes',
+    prevPower: { rSph:'-1.00', rCyl:'-0.25', rAxis:'90', lSph:'-1.25', lCyl:'-0.25', lAxis:'85' },
+    lensCategory: 'single',
+    power: { rSph:'-1.50', rCyl:'-0.50', rAxis:'90', rAdd:'', rPd:'31', lSph:'-1.75', lCyl:'-0.25', lAxis:'85', lAdd:'', lPd:'31.5' },
+    notes: 'This is a demo entry — delete it from Records once you\'re ready to go live.',
+    status: 'billed',
+    billing: {
+      lensType: 'Single Vision - Anti-glare', frameType: 'Full Rim - Metal',
+      deliveryDate: todayISO(), deliveryTime: '18:00',
+      totalAmount: 2200, advanceAmount: 1000, balanceAmount: 1200, paymentStatus: 'partial'
+    }
+  };
+  upsertRecord(demo);
+}
+
+/* ---------- small UI helpers ---------- */
+
+function el(id){ return document.getElementById(id); }
+
+function setRadioSelectedStyle(groupSelector){
+  document.querySelectorAll(groupSelector).forEach(opt=>{
+    const input = opt.querySelector('input');
+    const sync = ()=> opt.classList.toggle('selected', input.checked);
+    input.addEventListener('change', ()=>{
+      opt.parentElement.querySelectorAll('.radio-opt').forEach(o=>o.classList.remove('selected'));
+      sync();
+    });
+    sync();
+  });
+}
+
+function toast(msg){
+  let t = el('__toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = '__toast';
+    t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#123638;color:#fff;padding:11px 20px;border-radius:8px;font-size:0.9rem;font-family:Inter,sans-serif;box-shadow:0 4px 16px rgba(0,0,0,0.2);z-index:999;opacity:0;transition:opacity .2s;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t.__timer);
+  t.__timer = setTimeout(()=>{ t.style.opacity = '0'; }, 2400);
+}
+
+</script>
+<script>
+/* ==========================================================================
+   Taj Eye Care and Opticals — app logic (view router + per-view behaviour)
+   ========================================================================== */
+
+const NAV_ITEMS = [
+  { key:'home',        label:'Home',        roles:['staff','admin'] },
+  { key:'optometrist', label:'Optometrist', roles:['staff','admin'] },
+  { key:'billing',      label:'Shop / Billing', roles:['staff','admin'] },
+  { key:'records',      label:'Records',     roles:['admin'] },
+  { key:'inventory',    label:'Inventory',   roles:['admin'] },
+  { key:'dashboard',    label:'Dashboard',   roles:['admin'] },
+  { key:'settings',     label:'Settings',    roles:['admin'] },
+];
+
+let CURRENT_ROLE = null;
+
+function goView(name){
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-'+name));
+  document.querySelectorAll('#navLinks a').forEach(a => a.classList.toggle('active', a.dataset.view === name));
+  if(name === 'billing') refreshBillingQueue();
+  if(name === 'records') renderRecordsTable();
+  if(name === 'inventory') renderInventoryTable();
+  if(name === 'dashboard') renderDashboard();
+}
+
+function buildNav(role){
+  const nav = el('navLinks');
+  nav.innerHTML = NAV_ITEMS.filter(i => i.roles.includes(role)).map(i =>
+    `<a href="#" data-view="${i.key}" onclick="event.preventDefault(); goView('${i.key}');">${i.label}</a>`
+  ).join('');
+}
+
+/* ---------- LOGIN ---------- */
+
+document.querySelectorAll('.role-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const isAdmin = tab.dataset.role === 'admin';
+    el('staffFields').classList.toggle('hidden', isAdmin);
+    el('adminFieldPhone').classList.toggle('hidden', !isAdmin);
+    el('adminFieldPass').classList.toggle('hidden', !isAdmin);
+  });
+});
+
+el('loginForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const activeTab = document.querySelector('.role-tab.active').dataset.role;
+  let ok = false;
+  if(activeTab === 'staff'){
+    ok = el('staffPasscodeInput').value.trim() === getStaffPasscode();
+    if(ok) enterApp('staff');
+  } else {
+    ok = el('adminPhoneInput').value.trim() === ADMIN_PHONE && el('adminPasscodeInput').value.trim() === ADMIN_PASSCODE;
+    if(ok) enterApp('admin');
+  }
+  el('loginError').style.display = ok ? 'none' : 'block';
+});
+
+let autoSyncTimer = null;
+const AUTO_SYNC_INTERVAL_MS = 45000; // 45s — keeps queue/records/inventory/dashboard fresh across devices without manual clicks
+
+function refreshCurrentView(){
+  const activeView = document.querySelector('.view.active');
+  if(!activeView) return;
+  const name = activeView.id.replace('view-', '');
+  if(name === 'billing') renderBillingQueue(el('blSearchBox').value);
+  if(name === 'records') renderRecordsTable();
+  if(name === 'inventory') renderInventoryTable();
+  if(name === 'dashboard') renderDashboard();
+}
+
+function startAutoSync(){
+  stopAutoSync();
+  if(!getSheetUrl()) return;
+  autoSyncTimer = setInterval(async ()=>{
+    await fetchRecordsFromSheet();
+    if(CURRENT_ROLE === 'admin') await fetchInventoryFromSheet();
+    refreshCurrentView();
+  }, AUTO_SYNC_INTERVAL_MS);
+}
+function stopAutoSync(){
+  if(autoSyncTimer){ clearInterval(autoSyncTimer); autoSyncTimer = null; }
+}
+
+function enterApp(role){
+  setSession(role);
+  el('loginScreen').classList.add('hidden');
+  el('appShell').classList.remove('hidden');
+  CURRENT_ROLE = role;
+  el('roleBadge').textContent = role.toUpperCase();
+  buildNav(role);
+  goView('home');
+  seedDemoIfEmpty();
+  if(getSheetUrl()){
+    toast('Signing in — pulling previous data from your Sheet…');
+    Promise.all([
+      fetchRecordsFromSheet(),
+      role === 'admin' ? fetchInventoryFromSheet() : Promise.resolve({skipped:true})
+    ]).then(([recRes]) => {
+      if(recRes && recRes.ok) toast(`Loaded ${recRes.count} record(s) from your Sheet`);
+    });
+  }
+  startAutoSync();
+}
+
+el('logoutBtn').addEventListener('click', ()=>{
+  stopAutoSync();
+  clearSession();
+  CURRENT_ROLE = null;
+  el('appShell').classList.add('hidden');
+  el('loginScreen').classList.remove('hidden');
+  el('loginForm').reset();
+  el('loginError').style.display = 'none';
+});
+
+/* Resume session if already signed in on this device */
+(function initSession(){
+  const existing = getSession();
+  if(existing) enterApp(existing);
+})();
+
+/* ==========================================================================
+   OPTOMETRIST
+   ========================================================================== */
+(function(){
+  function validateForm(){
+    if(!el('custName').value.trim() || !el('custPhone').value.trim() || !el('custAge').value || !el('custDate').value){
+      toast('Please fill all customer details'); return false;
+    }
+    if(!document.querySelector('input[name=prevUsed]:checked')){ toast('Select yes or no for previous power'); return false; }
+    if(!document.querySelector('input[name=lensCategory]:checked')){ toast('Select single vision or bifocal'); return false; }
+    return true;
+  }
+
+  setRadioSelectedStyle('#prevGroup .radio-opt');
+  setRadioSelectedStyle('#lensCatGroup .radio-opt');
+
+  document.querySelectorAll('input[name=prevUsed]').forEach(r=>{
+    r.addEventListener('change', ()=> el('prevPowerBlock').classList.toggle('hidden', !(r.checked && r.value === 'yes')));
+  });
+
+  el('custDate').value = todayISO();
+  let lastRecord = null;
+
+  function resetOptoForm(){
+    el('rxForm').reset();
+    el('custDate').value = todayISO();
+    el('prevPowerBlock').classList.add('hidden');
+    document.querySelectorAll('#view-optometrist .radio-opt').forEach(o=>o.classList.remove('selected'));
+  }
+
+  el('rxForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!validateForm()) return;
+    const prevUsed = document.querySelector('input[name=prevUsed]:checked')?.value || 'no';
+    const lensCategory = document.querySelector('input[name=lensCategory]:checked')?.value || 'single';
+    const record = {
+      id: uid(), name: el('custName').value.trim(), phone: el('custPhone').value.trim(),
+      age: el('custAge').value, date: el('custDate').value, prevPowerUsed: prevUsed,
+      prevPower: { rSph:el('prevRSph').value.trim(), rCyl:el('prevRCyl').value.trim(), rAxis:el('prevRAxis').value.trim(),
+                   lSph:el('prevLSph').value.trim(), lCyl:el('prevLCyl').value.trim(), lAxis:el('prevLAxis').value.trim() },
+      lensCategory: lensCategory,
+      power: { rSph:el('newRSph').value.trim(), rCyl:el('newRCyl').value.trim(), rAxis:el('newRAxis').value.trim(), rAdd:el('newRAdd').value.trim(), rPd:el('newRPd').value.trim(),
+               lSph:el('newLSph').value.trim(), lCyl:el('newLCyl').value.trim(), lAxis:el('newLAxis').value.trim(), lAdd:el('newLAdd').value.trim(), lPd:el('newLPd').value.trim() },
+      notes: el('rxNote').value.trim(), status: 'eyetest', billing: null
+    };
+    upsertRecord(record);
+    syncRecordToSheet(record);
+    lastRecord = record;
+    el('successText').textContent = `${record.name} (${record.phone}) is now in the Shop / Billing queue.`;
+    el('successBox').classList.remove('hidden');
+    resetOptoForm();
+    el('successBox').scrollIntoView({behavior:'smooth'});
+  });
+
+  el('newTestBtn').addEventListener('click', ()=>{
+    resetOptoForm();
+    el('successBox').classList.add('hidden');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  el('printRxFromOptoBtn').addEventListener('click', ()=>{ if(lastRecord) fillPrescriptionPrint(lastRecord); });
+})();
+
+/* ==========================================================================
+   PRINT — shared fill functions used by Optometrist, Billing and Records
+   ========================================================================== */
+
+function printSheetNow(sheetId){
+  document.querySelectorAll('.print-sheet').forEach(s => s.classList.remove('print-active'));
+  el(sheetId).classList.add('print-active');
+  window.print();
+}
+
+function fillPrescriptionPrint(r){
+  const shop = getShopInfo();
+  el('prxClinicName').textContent = shop.name;
+  el('prxClinicAddr').textContent = [shop.address, shop.phone].filter(Boolean).join(' · ');
+  el('prxName').textContent = r.name; el('prxAge').textContent = r.age; el('prxPhone').textContent = r.phone; el('prxDate').textContent = r.date;
+  el('prxLensCat').textContent = r.lensCategory === 'bifocal' ? 'Bifocal / Progressive' : 'Single Vision';
+  if(r.prevPowerUsed === 'yes'){
+    el('prxPrevBlock').classList.remove('hidden');
+    el('prxPrevRSph').textContent = r.prevPower.rSph||'—'; el('prxPrevRCyl').textContent = r.prevPower.rCyl||'—'; el('prxPrevRAxis').textContent = r.prevPower.rAxis||'—';
+    el('prxPrevLSph').textContent = r.prevPower.lSph||'—'; el('prxPrevLCyl').textContent = r.prevPower.lCyl||'—'; el('prxPrevLAxis').textContent = r.prevPower.lAxis||'—';
+  } else { el('prxPrevBlock').classList.add('hidden'); }
+  const isBifocal = r.lensCategory === 'bifocal';
+  el('prxNewRSph').textContent = r.power.rSph||'—'; el('prxNewRCyl').textContent = r.power.rCyl||'—'; el('prxNewRAxis').textContent = r.power.rAxis||'—'; el('prxNewRAdd').textContent = r.power.rAdd||'—'; el('prxNewRPd').textContent = r.power.rPd||'—';
+  el('prxNewLSph').textContent = r.power.lSph||'—'; el('prxNewLCyl').textContent = r.power.lCyl||'—'; el('prxNewLAxis').textContent = r.power.lAxis||'—'; el('prxNewLAdd').textContent = r.power.lAdd||'—'; el('prxNewLPd').textContent = r.power.lPd||'—';
+  el('prxNoteWrap').classList.toggle('hidden', !r.notes);
+  el('prxNote').textContent = r.notes || '';
+  printSheetNow('printRx');
+}
+
+function fillBillOnlyPrint(r){
+  if(!r.billing) { toast('No billing details yet for this customer'); return; }
+  const shop = getShopInfo();
+  el('pboClinicName').textContent = shop.name;
+  el('pboClinicAddr').textContent = [shop.address, shop.phone].filter(Boolean).join(' · ');
+  el('pboName').textContent = r.name; el('pboPhone').textContent = r.phone; el('pboDate').textContent = r.date;
+  el('pboDelivery').textContent = `${r.billing.deliveryDate} ${r.billing.deliveryTime}`;
+  el('pboLensType').textContent = r.billing.lensType; el('pboFrameType').textContent = r.billing.frameType;
+  el('pboTotal').textContent = money(r.billing.totalAmount); el('pboAdvance').textContent = money(r.billing.advanceAmount); el('pboBalance').textContent = money(r.billing.balanceAmount);
+  const qr = getQrImage(); const qrImg = el('pboQr');
+  if(qr){ qrImg.src = qr; qrImg.classList.remove('hidden'); } else { qrImg.classList.add('hidden'); }
+  printSheetNow('printBillOnly');
+}
+
+function fillCombinedPrint(r){
+  if(!r.billing) { toast('No billing details yet for this customer'); return; }
+  const shop = getShopInfo();
+  el('pcmClinicName').textContent = shop.name;
+  el('pcmClinicAddr').textContent = [shop.address, shop.phone].filter(Boolean).join(' · ');
+  el('pcmName').textContent = r.name; el('pcmAge').textContent = r.age; el('pcmPhone').textContent = r.phone; el('pcmDate').textContent = r.date;
+  el('pcmLensCat').textContent = r.lensCategory === 'bifocal' ? 'Bifocal / Progressive' : 'Single Vision';
+  el('pcmDelivery').textContent = `${r.billing.deliveryDate} ${r.billing.deliveryTime}`;
+  if(r.prevPowerUsed === 'yes'){
+    el('pcmPrevBlock').classList.remove('hidden');
+    el('pcmPrevRSph').textContent = r.prevPower.rSph||'—'; el('pcmPrevRCyl').textContent = r.prevPower.rCyl||'—'; el('pcmPrevRAxis').textContent = r.prevPower.rAxis||'—';
+    el('pcmPrevLSph').textContent = r.prevPower.lSph||'—'; el('pcmPrevLCyl').textContent = r.prevPower.lCyl||'—'; el('pcmPrevLAxis').textContent = r.prevPower.lAxis||'—';
+  } else { el('pcmPrevBlock').classList.add('hidden'); }
+  const isBifocal = r.lensCategory === 'bifocal';
+  el('pcmNewRSph').textContent = r.power.rSph||'—'; el('pcmNewRCyl').textContent = r.power.rCyl||'—'; el('pcmNewRAxis').textContent = r.power.rAxis||'—'; el('pcmNewRAdd').textContent = r.power.rAdd||'—'; el('pcmNewRPd').textContent = r.power.rPd||'—';
+  el('pcmNewLSph').textContent = r.power.lSph||'—'; el('pcmNewLCyl').textContent = r.power.lCyl||'—'; el('pcmNewLAxis').textContent = r.power.lAxis||'—'; el('pcmNewLAdd').textContent = r.power.lAdd||'—'; el('pcmNewLPd').textContent = r.power.lPd||'—';
+  el('pcmNoteWrap').classList.toggle('hidden', !r.notes);
+  el('pcmNote').textContent = r.notes || '';
+  el('pcmLensType').textContent = r.billing.lensType; el('pcmFrameType').textContent = r.billing.frameType;
+  el('pcmTotal').textContent = money(r.billing.totalAmount); el('pcmAdvance').textContent = money(r.billing.advanceAmount); el('pcmBalance').textContent = money(r.billing.balanceAmount);
+  const qr = getQrImage(); const qrImg = el('pcmQr');
+  if(qr){ qrImg.src = qr; qrImg.classList.remove('hidden'); } else { qrImg.classList.add('hidden'); }
+  printSheetNow('printCombined');
+}
+
+/* ==========================================================================
+   BILLING
+   ========================================================================== */
+
+let blSelectedId = null;
+
+function refreshBillingQueue(){ renderBillingQueue(el('blSearchBox').value); }
+
+function renderBillingQueue(filter){
+  const list = getPendingBillingRecords().filter(r=>{
+    if(!filter) return true;
+    const f = filter.toLowerCase();
+    return r.name.toLowerCase().includes(f) || r.phone.includes(f);
+  });
+  const box = el('blQueueList');
+  if(list.length === 0){ box.innerHTML = '<div class="empty-note">No customers yet. Add one from the Optometrist page, or start a walk-in bill.</div>'; return; }
+  box.innerHTML = list.map(r => `
+    <div class="queue-item ${r.id===blSelectedId?'active':''}" data-id="${r.id}">
+      <div><div class="qi-name">${r.name}</div><div class="qi-meta">${r.phone} · ${r.date}</div></div>
+      <span class="badge ${r.status==='billed' ? 'badge-good' : 'badge-wait'}">${r.status==='billed' ? 'Billed' : 'Awaiting billing'}</span>
+    </div>`).join('');
+  box.querySelectorAll('.queue-item').forEach(item => item.addEventListener('click', ()=> selectBillingRecord(item.dataset.id)));
+}
+
+function selectBillingRecord(id){
+  blSelectedId = id;
+  const r = getRecord(id);
+  if(!r) return;
+  el('blSuccessBox').classList.add('hidden');
+  el('blNoSelectionCard').classList.add('hidden');
+  el('billForm').classList.remove('hidden');
+  el('blCustHeading').textContent = r.name;
+  el('blStatusBadge').textContent = r.status === 'billed' ? 'Billed' : 'Awaiting billing';
+  el('blStatusBadge').className = 'badge ' + (r.status === 'billed' ? 'badge-good' : 'badge-wait');
+  el('bName').value = r.name; el('bPhone').value = r.phone; el('bAge').value = r.age; el('bDate').value = r.date;
+  el('bLensCategory').value = r.lensCategory || 'single';
+  el('bNote').value = r.notes || '';
+  el('bRSph').value = r.power.rSph; el('bRCyl').value = r.power.rCyl; el('bRAxis').value = r.power.rAxis; el('bRAdd').value = r.power.rAdd; el('bRPd').value = r.power.rPd || '';
+  el('bLSph').value = r.power.lSph; el('bLCyl').value = r.power.lCyl; el('bLAxis').value = r.power.lAxis; el('bLAdd').value = r.power.lAdd; el('bLPd').value = r.power.lPd || '';
+  const b = r.billing || {};
+  el('lensType').value = b.lensType || ''; el('frameType').value = b.frameType || '';
+  el('deliveryDate').value = b.deliveryDate || ''; el('deliveryTime').value = b.deliveryTime || '';
+  el('totalAmount').value = b.totalAmount ?? ''; el('advanceAmount').value = b.advanceAmount ?? 0;
+  document.querySelectorAll('input[name=paymentStatus]').forEach(inp=>{
+    inp.checked = (b.paymentStatus || 'partial') === inp.value;
+    inp.dispatchEvent(new Event('change'));
+  });
+  updateAmountView();
+  renderBillingQr();
+  renderBillingQueue(el('blSearchBox').value);
+}
+
+function renderBillingQr(){
+  const data = getQrImage();
+  el('billQrWrap').innerHTML = data ? `<img src="${data}">` : '<span class="empty-note">No QR set — add one in Settings</span>';
+}
+
+function updateAmountView(){
+  const total = Number(el('totalAmount').value) || 0;
+  const advance = Number(el('advanceAmount').value) || 0;
+  const isFull = document.querySelector('input[name=paymentStatus]:checked')?.value === 'full';
+  const balance = isFull ? 0 : Math.max(total - advance, 0);
+  el('viewTotal').textContent = money(total);
+  el('viewAdvance').textContent = money(isFull ? total : advance);
+  el('viewBalance').textContent = money(balance);
+  el('viewBalance').closest('.amount-row').classList.toggle('paid', balance === 0);
+}
+['totalAmount','advanceAmount'].forEach(id => el(id).addEventListener('input', updateAmountView));
+document.querySelectorAll('input[name=paymentStatus]').forEach(r => r.addEventListener('change', updateAmountView));
+setRadioSelectedStyle('#paymentStatusGroup .radio-opt');
+
+el('blSearchBox').addEventListener('input', (e)=> renderBillingQueue(e.target.value));
+el('blPullBtn').addEventListener('click', async ()=>{
+  if(!getSheetUrl()){ toast('Add your Google Sheet link in Settings first'); return; }
+  toast('Pulling from Excel Sheet…');
+  const res = await fetchRecordsFromSheet();
+  if(res.ok){ toast(`Pulled ${res.count} record(s) from your Sheet`); renderBillingQueue(el('blSearchBox').value); }
+  else toast('Could not reach the Sheet — showing local data');
+});
+el('blPushBtn').addEventListener('click', ()=> pushAllRecordsToSheet(el('blPushBtn')));
+el('blDeselectBtn').addEventListener('click', clearBillingForm);
+
+el('walkInBtn').addEventListener('click', ()=>{
+  const name = prompt('Customer name for this walk-in bill:');
+  if(!name || !name.trim()) return;
+  const phone = prompt('Phone number:') || '';
+  const age = prompt('Age:') || '';
+  const record = {
+    id: uid(), name: name.trim(), phone: phone.trim(), age: age.trim(), date: todayISO(),
+    prevPowerUsed: 'no', prevPower: {rSph:'',rCyl:'',rAxis:'',lSph:'',lCyl:'',lAxis:''},
+    lensCategory: 'single',
+    power: {rSph:'',rCyl:'',rAxis:'',rAdd:'',rPd:'',lSph:'',lCyl:'',lAxis:'',lAdd:'',lPd:''},
+    notes: 'Walk-in — no eye test on file.', status: 'eyetest', billing: null
+  };
+  upsertRecord(record);
+  syncRecordToSheet(record);
+  renderBillingQueue(el('blSearchBox').value);
+  selectBillingRecord(record.id);
+  toast('Walk-in customer added — fill in order details below');
+});
+
+function currentBillingRecordFromForm(){
+  const r = getRecord(blSelectedId);
+  if(!r) return null;
+  r.name = el('bName').value.trim(); r.phone = el('bPhone').value.trim(); r.age = el('bAge').value; r.date = el('bDate').value;
+  r.lensCategory = el('bLensCategory').value; r.notes = el('bNote').value.trim();
+  r.power = { rSph:el('bRSph').value.trim(), rCyl:el('bRCyl').value.trim(), rAxis:el('bRAxis').value.trim(), rAdd:el('bRAdd').value.trim(), rPd:el('bRPd').value.trim(),
+              lSph:el('bLSph').value.trim(), lCyl:el('bLCyl').value.trim(), lAxis:el('bLAxis').value.trim(), lAdd:el('bLAdd').value.trim(), lPd:el('bLPd').value.trim() };
+  const total = Number(el('totalAmount').value) || 0;
+  const advance = Number(el('advanceAmount').value) || 0;
+  const paymentStatus = document.querySelector('input[name=paymentStatus]:checked')?.value || 'partial';
+  const balance = paymentStatus === 'full' ? 0 : Math.max(total - advance, 0);
+  r.billing = {
+    lensType: el('lensType').value, frameType: el('frameType').value,
+    deliveryDate: el('deliveryDate').value, deliveryTime: el('deliveryTime').value,
+    totalAmount: total, advanceAmount: paymentStatus === 'full' ? total : advance,
+    balanceAmount: balance, paymentStatus: paymentStatus
+  };
+  r.status = 'billed';
+  return r;
+}
+
+let lastBilledRecord = null;
+
+function clearBillingForm(){
+  blSelectedId = null;
+  el('billForm').classList.add('hidden');
+  el('blSuccessBox').classList.add('hidden');
+  el('blNoSelectionCard').classList.remove('hidden');
+  renderBillingQueue(el('blSearchBox').value);
+}
+
+el('billForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  if(!el('lensType').value || !el('frameType').value || !el('deliveryDate').value || !el('deliveryTime').value || !el('totalAmount').value){
+    toast('Please fill lens type, frame type, delivery date/time and total amount'); return;
+  }
+  if(!document.querySelector('input[name=paymentStatus]:checked')){ toast('Select a payment status'); return; }
+  const r = currentBillingRecordFromForm();
+  upsertRecord(r);
+  syncRecordToSheet(r);
+  lastBilledRecord = r;
+  el('blSuccessText').textContent = `${r.name} (${r.phone}) — ${r.billing.lensType}, ${r.billing.frameType}, ${money(r.billing.totalAmount)} total.`;
+  el('billForm').classList.add('hidden');
+  el('blSuccessBox').classList.remove('hidden');
+  blSelectedId = null;
+  renderBillingQueue(el('blSearchBox').value);
+  el('blSuccessBox').scrollIntoView({behavior:'smooth'});
+});
+
+el('blPrintRxBtn').addEventListener('click', ()=>{ if(lastBilledRecord) fillPrescriptionPrint(lastBilledRecord); });
+el('blPrintBillBtn').addEventListener('click', ()=>{ if(lastBilledRecord) fillBillOnlyPrint(lastBilledRecord); });
+el('blPrintCombinedBtn').addEventListener('click', ()=>{ if(lastBilledRecord) fillCombinedPrint(lastBilledRecord); });
+el('blNextCustomerBtn').addEventListener('click', ()=>{
+  clearBillingForm();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+function readyToPrintBill(){
+  if(!el('lensType').value || !el('frameType').value || !el('totalAmount').value){
+    toast('Fill lens type, frame type and total amount before printing'); return false;
+  }
+  return true;
+}
+
+el('printRxOnlyBtn').addEventListener('click', ()=>{
+  if(!blSelectedId) return;
+  const r = currentBillingRecordFromForm() || getRecord(blSelectedId);
+  fillPrescriptionPrint(r);
+});
+el('printBillOnlyBtn').addEventListener('click', ()=>{
+  if(!blSelectedId || !readyToPrintBill()) return;
+  const r = currentBillingRecordFromForm();
+  upsertRecord(r); syncRecordToSheet(r); selectBillingRecord(r.id);
+  fillBillOnlyPrint(r);
+});
+el('printCombinedBtn').addEventListener('click', ()=>{
+  if(!blSelectedId || !readyToPrintBill()) return;
+  const r = currentBillingRecordFromForm();
+  upsertRecord(r); syncRecordToSheet(r); selectBillingRecord(r.id);
+  fillCombinedPrint(r);
+});
+
+/* ==========================================================================
+   RECORDS
+   ========================================================================== */
+
+let recSelectedId = null;
+
+function recMatchesFilters(r){
+  const q = el('recSearchBox').value.trim().toLowerCase();
+  const status = el('recStatusFilter').value;
+  const from = el('recFromDate').value;
+  const to = el('recToDate').value;
+  if(q && !(r.name.toLowerCase().includes(q) || r.phone.includes(q))) return false;
+  if(status && r.status !== status) return false;
+  if(from && r.date < from) return false;
+  if(to && r.date > to) return false;
+  return true;
+}
+
+function renderRecordsTable(){
+  const all = getAllRecords().filter(recMatchesFilters);
+  el('recCountLine').textContent = `${all.length} record${all.length===1?'':'s'}`;
+  const body = el('recTableBody');
+  if(all.length === 0){ body.innerHTML = `<tr><td colspan="13" style="text-align:center; color:#7C9291; padding:26px;">No records match your filters.</td></tr>`; return; }
+  body.innerHTML = all.map(r=>{
+    const b = r.billing;
+    const time = (r.createdAt||'').slice(11,16);
+    const demoTag = r.name === 'Demo Customer' ? ' <span class="demo-tag">DEMO</span>' : '';
+    return `<tr data-id="${r.id}" class="${r.id===recSelectedId?'active':''}">
+      <td>${r.date||''}</td><td>${time}</td><td>${r.name||''}${demoTag}</td><td>${r.phone||''}</td><td>${r.age||''}</td>
+      <td><span class="badge ${r.status==='billed'?'badge-good':'badge-wait'}">${r.status==='billed'?'Billed':'Awaiting'}</span></td>
+      <td>${r.lensCategory==='bifocal'?'Bifocal':'Single vision'}</td>
+      <td>${b?b.lensType||'':''}</td><td>${b?b.frameType||'':''}</td>
+      <td>${b?money(b.totalAmount):''}</td><td>${b?money(b.advanceAmount):''}</td>
+      <td>${b? (b.balanceAmount>0 ? `<span style="color:var(--bad); font-weight:700;">${money(b.balanceAmount)}</span>` : `<span style="color:var(--good); font-weight:700;">${money(0)}</span>`) : ''}</td>
+      <td>${b? (b.paymentStatus==='full'?'<span class="badge badge-good">Full</span>':'<span class="badge badge-bad">Balance due</span>') : ''}</td>
+    </tr>`;
+  }).join('');
+  body.querySelectorAll('tr[data-id]').forEach(row => row.addEventListener('click', ()=> selectRecordDetail(row.dataset.id)));
+}
+
+function selectRecordDetail(id){
+  recSelectedId = id;
+  const r = getRecord(id);
+  if(!r) return;
+  el('recDetailCard').classList.remove('hidden');
+  el('recDName').textContent = r.name;
+  el('recDStatusBadge').textContent = r.status === 'billed' ? 'Billed' : 'Awaiting billing';
+  el('recDStatusBadge').className = 'badge ' + (r.status === 'billed' ? 'badge-good' : 'badge-wait');
+  el('recDDate').textContent = r.date;
+  el('recDPhone').textContent = r.phone; el('recDAge').textContent = r.age;
+  el('recDPrevUsed').textContent = r.prevPowerUsed === 'yes' ? 'Yes' : 'No';
+  el('recDLensCat').textContent = r.lensCategory === 'bifocal' ? 'Bifocal / Progressive' : 'Single Vision';
+  el('recDRSph').textContent = r.power.rSph||'—'; el('recDRCyl').textContent = r.power.rCyl||'—'; el('recDRAxis').textContent = r.power.rAxis||'—'; el('recDRAdd').textContent = r.power.rAdd||'—'; el('recDRPd').textContent = r.power.rPd||'—';
+  el('recDLSph').textContent = r.power.lSph||'—'; el('recDLCyl').textContent = r.power.lCyl||'—'; el('recDLAxis').textContent = r.power.lAxis||'—'; el('recDLAdd').textContent = r.power.lAdd||'—'; el('recDLPd').textContent = r.power.lPd||'—';
+  el('recDNoteWrap').classList.toggle('hidden', !r.notes);
+  el('recDNote').textContent = r.notes || '';
+  if(r.billing){
+    el('recDBillingBlock').classList.remove('hidden'); el('recDNoBilling').classList.add('hidden');
+    el('recDLensType').textContent = r.billing.lensType; el('recDFrameType').textContent = r.billing.frameType;
+    el('recDDelivery').textContent = `${r.billing.deliveryDate} ${r.billing.deliveryTime}`;
+    el('recDTotal').textContent = money(r.billing.totalAmount); el('recDAdvance').textContent = money(r.billing.advanceAmount); el('recDBalance').textContent = money(r.billing.balanceAmount);
+    el('recReprintBillBtn').classList.remove('hidden'); el('recReprintCombinedBtn').classList.remove('hidden');
+  } else {
+    el('recDBillingBlock').classList.add('hidden'); el('recDNoBilling').classList.remove('hidden');
+    el('recReprintBillBtn').classList.add('hidden'); el('recReprintCombinedBtn').classList.add('hidden');
+  }
+  el('recDetailCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+  renderRecordsTable();
+}
+
+['recSearchBox','recStatusFilter','recFromDate','recToDate'].forEach(id => el(id).addEventListener('input', renderRecordsTable));
+el('recClearFiltersBtn').addEventListener('click', ()=>{
+  el('recSearchBox').value=''; el('recStatusFilter').value=''; el('recFromDate').value=''; el('recToDate').value='';
+  document.querySelectorAll('#view-records .preset-btn').forEach(b=>b.classList.remove('active'));
+  renderRecordsTable();
+});
+document.querySelectorAll('#view-records .preset-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#view-records .preset-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const range = presetRange(btn.dataset.preset);
+    el('recFromDate').value = range.from; el('recToDate').value = range.to;
+    renderRecordsTable();
+  });
+});
+
+async function pushAllRecordsToSheet(triggerBtn){
+  if(!getSheetUrl()){ toast('Add your Google Sheet link in Settings first'); return; }
+  const all = getAllRecords();
+  if(all.length === 0){ toast('No local records to sync'); return; }
+  if(triggerBtn) triggerBtn.disabled = true;
+  toast(`Syncing ${all.length} record(s) to your Excel Sheet — this can take a moment…`);
+  let ok = 0, failed = 0;
+  for(const r of all){
+    const res = await syncRecordToSheet(r);
+    if(res && res.ok) ok++; else failed++;
+  }
+  if(triggerBtn) triggerBtn.disabled = false;
+  toast(failed === 0
+    ? `Synced all ${ok} record(s) to your Excel Sheet`
+    : `Synced ${ok} record(s), ${failed} failed — check Executions in Apps Script`);
+}
+
+async function pushAllInventoryToSheet(triggerBtn){
+  if(!getSheetUrl()){ toast('Add your Google Sheet link in Settings first'); return; }
+  const all = getInventory();
+  if(all.length === 0){ toast('No local inventory items to sync'); return; }
+  if(triggerBtn) triggerBtn.disabled = true;
+  toast(`Syncing ${all.length} item(s) to your Excel Sheet…`);
+  let ok = 0, failed = 0;
+  for(const item of all){
+    const res = await syncInventoryItemToSheet(item);
+    if(res && res.ok) ok++; else failed++;
+  }
+  if(triggerBtn) triggerBtn.disabled = false;
+  toast(failed === 0
+    ? `Synced all ${ok} item(s) to your Excel Sheet`
+    : `Synced ${ok} item(s), ${failed} failed — check Executions in Apps Script`);
+}
+
+el('recPullSheetBtn').addEventListener('click', async ()=>{
+  if(!getSheetUrl()){ toast('Add your Google Sheet link in Settings first'); return; }
+  toast('Pulling from Excel Sheet…');
+  const res = await fetchRecordsFromSheet();
+  if(res.ok){ toast(`Pulled ${res.count} record(s) from your Sheet`); renderRecordsTable(); }
+  else toast('Could not reach the Sheet — showing local data');
+});
+
+el('recPushSheetBtn').addEventListener('click', ()=> pushAllRecordsToSheet(el('recPushSheetBtn')));
+
+el('recExportCsvBtn').addEventListener('click', ()=>{
+  const rows = getAllRecords().filter(recMatchesFilters);
+  downloadCsv(recordsToCsv(rows), 'taj-eye-care-records.csv');
+});
+
+el('recDeleteRecordBtn').addEventListener('click', ()=>{
+  if(!recSelectedId) return;
+  if(!confirm('Delete this record permanently from this device? This does not remove it from your Google Sheet.')) return;
+  deleteRecord(recSelectedId);
+  recSelectedId = null;
+  el('recDetailCard').classList.add('hidden');
+  renderRecordsTable();
+  toast('Record deleted');
+});
+
+el('recOpenBillingBtn').addEventListener('click', ()=>{
+  if(!recSelectedId) return;
+  goView('billing');
+  selectBillingRecord(recSelectedId);
+});
+el('recReprintRxBtn').addEventListener('click', ()=>{ const r = getRecord(recSelectedId); if(r) fillPrescriptionPrint(r); });
+el('recReprintBillBtn').addEventListener('click', ()=>{ const r = getRecord(recSelectedId); if(r) fillBillOnlyPrint(r); });
+el('recReprintCombinedBtn').addEventListener('click', ()=>{ const r = getRecord(recSelectedId); if(r) fillCombinedPrint(r); });
+
+/* ==========================================================================
+   INVENTORY
+   ========================================================================== */
+
+function renderInventoryTable(){
+  const q = (el('invSearchBox').value || '').trim().toLowerCase();
+  const items = getInventory().filter(i => !q || i.name.toLowerCase().includes(q));
+  const body = el('invTableBody');
+  if(items.length === 0){ body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#7C9291; padding:22px;">No inventory items yet.</td></tr>`; return; }
+  body.innerHTML = items.map(i => `
+    <tr data-id="${i.id}">
+      <td>${i.name}</td><td style="text-transform:capitalize;">${i.category}</td>
+      <td class="${Number(i.stock) <= 2 ? 'low-stock' : ''}">${i.stock}${Number(i.stock)<=2 ? ' (low)' : ''}</td>
+      <td>${i.price ? money(i.price) : '—'}</td>
+      <td>${(i.updatedAt||'').slice(0,10)}</td>
+      <td><button type="button" class="btn btn-ghost" data-edit="${i.id}" style="padding:5px 10px; font-size:0.78rem;">Edit</button>
+          <button type="button" class="btn btn-ghost" data-del="${i.id}" style="padding:5px 10px; font-size:0.78rem; color:var(--bad);">Remove</button></td>
+    </tr>`).join('');
+  body.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', ()=> editInventoryItem(b.dataset.edit)));
+  body.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', ()=>{
+    const id = b.dataset.del;
+    if(confirm('Remove this inventory item?')){
+      deleteInventoryItem(id);
+      deleteInventoryItemFromSheet(id);
+      renderInventoryTable();
+      toast('Item removed');
+    }
+  }));
+}
+
+function editInventoryItem(id){
+  const item = getInventory().find(i => i.id === id);
+  if(!item) return;
+  el('invEditId').value = item.id;
+  el('invName').value = item.name; el('invCategory').value = item.category;
+  el('invStock').value = item.stock; el('invPrice').value = item.price || '';
+  el('invFormTitle').textContent = 'Edit item';
+  el('invCancelEditBtn').classList.remove('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+el('invCancelEditBtn').addEventListener('click', ()=>{
+  el('invEditId').value = ''; el('invName').value=''; el('invStock').value=''; el('invPrice').value='';
+  el('invFormTitle').textContent = 'Add item';
+  el('invCancelEditBtn').classList.add('hidden');
+});
+
+el('invSaveBtn').addEventListener('click', ()=>{
+  const name = el('invName').value.trim();
+  const stock = el('invStock').value;
+  if(!name || stock === ''){ toast('Enter item name and stock quantity'); return; }
+  const id = el('invEditId').value || uid();
+  const item = { id, name, category: el('invCategory').value, stock: Number(stock), price: Number(el('invPrice').value) || 0 };
+  upsertInventoryItem(item);
+  syncInventoryItemToSheet(item);
+  el('invEditId').value=''; el('invName').value=''; el('invStock').value=''; el('invPrice').value='';
+  el('invFormTitle').textContent = 'Add item'; el('invCancelEditBtn').classList.add('hidden');
+  renderInventoryTable();
+  toast('Inventory saved');
+});
+el('invSearchBox').addEventListener('input', renderInventoryTable);
+el('invPullBtn').addEventListener('click', async ()=>{
+  if(!getSheetUrl()){ toast('Add your Google Sheet link in Settings first'); return; }
+  toast('Pulling inventory from Excel Sheet…');
+  const res = await fetchInventoryFromSheet();
+  if(res.ok){ toast(`Pulled ${res.count} item(s) from your Sheet`); renderInventoryTable(); }
+  else toast('Could not reach the Sheet — showing local data');
+});
+el('invPushBtn').addEventListener('click', ()=> pushAllInventoryToSheet(el('invPushBtn')));
+
+/* ==========================================================================
+   DASHBOARD
+   ========================================================================== */
+
+function renderDashboard(preset){
+  const active = preset !== undefined ? preset : (document.querySelector('#view-dashboard .preset-btn.active')?.dataset.preset ?? '');
+  const range = presetRange(active);
+  const rows = getAllRecords().filter(r => r.status === 'billed' && r.billing).filter(r=>{
+    if(range.from && r.date < range.from) return false;
+    if(range.to && r.date > range.to) return false;
+    return true;
+  });
+  const revenue = rows.reduce((s,r)=> s + (Number(r.billing.totalAmount)||0), 0);
+  const advance = rows.reduce((s,r)=> s + (Number(r.billing.advanceAmount)||0), 0);
+  const balance = rows.reduce((s,r)=> s + (Number(r.billing.balanceAmount)||0), 0);
+  el('kpiCount').textContent = rows.length;
+  el('kpiRevenue').textContent = money(revenue);
+  el('kpiAdvance').textContent = money(advance);
+  el('kpiBalance').textContent = money(balance);
+  const body = el('dashTableBody');
+  if(rows.length === 0){ body.innerHTML = `<tr><td colspan="8" style="text-align:center; color:#7C9291; padding:22px;">No billed customers in this range.</td></tr>`; return; }
+  body.innerHTML = rows.map(r => `<tr>
+    <td>${r.date}</td><td>${r.name}</td><td>${r.phone}</td><td>${r.billing.lensType}</td><td>${r.billing.frameType}</td>
+    <td>${money(r.billing.totalAmount)}</td><td>${money(r.billing.advanceAmount)}</td><td>${money(r.billing.balanceAmount)}</td>
+  </tr>`).join('');
+}
+document.querySelectorAll('.dash-preset').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.dash-preset').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderDashboard(btn.dataset.preset);
+  });
+});
+el('dashPullBtn').addEventListener('click', async ()=>{
+  if(!getSheetUrl()){ toast('Add your Google Sheet link in Settings first'); return; }
+  toast('Pulling from Excel Sheet…');
+  const res = await fetchRecordsFromSheet();
+  if(res.ok){ toast(`Pulled ${res.count} record(s) from your Sheet`); renderDashboard(); }
+  else toast('Could not reach the Sheet — showing local data');
+});
+el('dashPushBtn').addEventListener('click', ()=> pushAllRecordsToSheet(el('dashPushBtn')));
+
+/* ==========================================================================
+   SETTINGS
+   ========================================================================== */
+
+function loadSettingsView(){
+  const qrData = getQrImage();
+  if(qrData){ el('qrPreview').src = qrData; el('qrPreview').classList.remove('hidden'); el('qrEmpty').classList.add('hidden'); }
+  const shop = getShopInfo();
+  el('shopName').value = shop.name || ''; el('shopAddress').value = shop.address || ''; el('shopPhone').value = shop.phone || '';
+  el('sheetUrl').value = getSheetUrl();
+  el('sheetStatus').textContent = getSheetUrl() ? 'Sync is active.' : 'Not configured yet — app still works fully offline/local.';
+  el('staffPassInput').value = getStaffPasscode();
+}
+
+let pendingQrDataUrl = null;
+el('qrFile').addEventListener('change', (e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ pendingQrDataUrl = reader.result; el('qrPreview').src = pendingQrDataUrl; el('qrPreview').classList.remove('hidden'); el('qrEmpty').classList.add('hidden'); };
+  reader.readAsDataURL(f);
+});
+el('saveQrBtn').addEventListener('click', ()=>{
+  if(pendingQrDataUrl){ setQrImage(pendingQrDataUrl); toast('QR code saved'); } else toast('Choose an image first');
+});
+el('clearQrBtn').addEventListener('click', ()=>{
+  localStorage.removeItem(QR_KEY); pendingQrDataUrl=null; el('qrPreview').classList.add('hidden'); el('qrEmpty').classList.remove('hidden'); toast('QR removed');
+});
+el('saveShopBtn').addEventListener('click', ()=>{
+  setShopInfo({ name: el('shopName').value.trim(), address: el('shopAddress').value.trim(), phone: el('shopPhone').value.trim() });
+  toast('Shop details saved');
+});
+el('saveSheetBtn').addEventListener('click', ()=>{
+  setSheetUrl(el('sheetUrl').value);
+  el('sheetStatus').textContent = getSheetUrl() ? 'Sync is active.' : 'Not configured yet — app still works fully offline/local.';
+  toast('Sheet link saved');
+});
+el('saveStaffPassBtn').addEventListener('click', ()=>{
+  const val = el('staffPassInput').value.trim();
+  if(!val){ toast('Enter a passcode'); return; }
+  setStaffPasscode(val);
+  toast('Staff passcode updated');
+});
+el('removeDemoBtn').addEventListener('click', ()=>{
+  const demo = getAllRecords().find(r => r.name === 'Demo Customer');
+  if(!demo){ toast('No demo record found'); return; }
+  deleteRecord(demo.id);
+  toast('Demo customer removed');
+});
+
+/* Load settings values whenever that view becomes visible */
+const _origGoView = goView;
+goView = function(name){
+  _origGoView(name);
+  if(name === 'settings') loadSettingsView();
+};
+
+</script>
+</body>
+</html>
